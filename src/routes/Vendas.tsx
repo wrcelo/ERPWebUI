@@ -1,5 +1,7 @@
+import PageLayout from "@/components/custom/PageLayout";
+
 const Vendas = () => {
-	return <div className="p-4 flex w-full justify-center items-center h-full text-muted-foreground">Em construção...</div>;
+	return <></>;
 };
 
 export default Vendas;
