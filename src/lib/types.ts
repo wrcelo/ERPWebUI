@@ -20,3 +20,10 @@ export type Empresa = {
 		cep?: string;
 	};
 };
+
+export type Produto = {
+	id: string;
+	nome?: string;
+	imgUrl?: string;
+	descricao?: string;
+};

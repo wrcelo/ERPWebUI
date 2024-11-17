@@ -1,5 +1,5 @@
 import { Menu, StickyNote } from "lucide-react";
-import { Separator } from "../ui/separator";
+
 import { ReactNode, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { navMenu } from "@/routes/RootLayout";

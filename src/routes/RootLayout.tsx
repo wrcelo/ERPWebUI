@@ -65,25 +65,25 @@ export default function Root() {
 	return (
 		<>
 			<div className="flex flex-col w-screen h-screen lg:flex-row-reverse ">
-				<div className="h-full w-full lg:w-[calc(100vw-240px)] bg-muted-foreground/5">
+				<div className="h-full w-full bg-muted-foreground/5">
 					<PageLayout>
 						<Outlet />
 					</PageLayout>
 				</div>
-				<div className="lg:border-r px-6 lg:p-4">
-					<div className="mb-8">
-						<div className="p-4 bg-muted-foreground/5 border rounded-md flex gap-4 items-center">
+				<div className="lg:border-r lg:px-6 hidden lg:block">
+					<div className="my-6">
+						<div className="p-4 bg-muted-foreground/5 rounded-md flex gap-4 items-center">
 							<Avatar>
 								<AvatarImage src="https://github.com/wrcelo.png" />
 								<AvatarFallback>wr</AvatarFallback>
 							</Avatar>
 							<div>
-								<h6 className="font-semibold text-foreground/70 text-sm">Marcelo Ramalho</h6>
+								<h6 className="font-semibold text-foreground/80 text-xs">Marcelo Ramalho</h6>
 								<span className="text-xs font-semibold text-muted-foreground/80">Admin</span>
 							</div>
 						</div>
 					</div>
-					<div className="w-full h-20 grid grid-cols-5 items-center lg:w-[240px] lg:flex lg:flex-col lg:items-start lg:h-full lg:gap-6 lg:px-3">
+					<div className="lg:gap-6 lg:flex lg:flex-col lg:w-[220px]">
 						{navMenu.map((item, index) => {
 							return (
 								<NavMenuItem

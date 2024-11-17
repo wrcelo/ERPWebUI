@@ -1,5 +1,19 @@
+import { DataTable } from "@/components/custom/DataTable";
+import { ColumnsProdutos } from "@/lib/columns";
+
 const Produtos = () => {
-	return <div>teste</div>;
+	const handleDelete = () => {};
+	const handleEdit = () => {};
+	return (
+		<>
+			<div>
+				<DataTable
+					columns={ColumnsProdutos({ onEdit: handleEdit, onDelete: handleDelete })}
+					data={[]}
+				/>
+			</div>
+		</>
+	);
 };
 
 export default Produtos;

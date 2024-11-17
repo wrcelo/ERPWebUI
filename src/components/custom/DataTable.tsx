@@ -65,14 +65,14 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 							>
 								<div className="flex gap-2 justify-center items-center font-semibold text-muted-foreground text-xs">
 									<XCircle className="w-3 h-3" />
-									Não foi encontrado nenhuma dado
+									Não foi encontrado nenhum dado
 								</div>
 							</TableCell>
 						</TableRow>
 					)}
 				</TableBody>
 			</Table>
-			<div className="flex items-center justify-end space-x-2 py-4">
+			<div className="flex items-center justify-end space-x-2 ">
 				<Button
 					variant="outline"
 					size="sm"

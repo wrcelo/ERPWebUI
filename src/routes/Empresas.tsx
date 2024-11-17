@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { ColumnsEmpresas } from "@/lib/columns";
 import { Empresa } from "@/lib/types";
-import { Building2, ListFilter, PlusCircle, Unplug } from "lucide-react";
+import { Building2, ListFilter, Plus, PlusCircle, Unplug } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -745,18 +745,17 @@ const Empresas = () => {
 					</Form>
 				</DialogContent>
 			</Dialog>
-
-			<div className="mb-4 flex gap-2 justify-between">
+			<div className="mb-6 flex gap-2 justify-between">
 				<div className="flex gap-2">
 					<Button
 						onClick={() => {
 							setIsAddOpen(true);
 							form.reset();
 						}}
-						className="gap-1"
+						className="gap-2"
 					>
-						<PlusCircle className="w-4 h-4" />
-						<div className="hidden lg:block ">Adicionar</div>
+						<Plus className="w-4 h-4" />
+						<div className="hidden lg:block ">Adicionar Empresa</div>
 					</Button>
 					{/* <Button
 						className="gap-1"
@@ -768,11 +767,11 @@ const Empresas = () => {
 				</div>
 				<div>
 					<div className="flex w-full max-w-sm items-center space-x-2">
-						<Input
+						{/* <Input
 							type="text"
 							placeholder="Buscar..."
 							onInput={handleBuscaEmpresas}
-						/>
+						/> */}
 					</div>
 				</div>
 			</div>
