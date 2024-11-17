@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { ColumnsEmpresas } from "@/lib/columns";
 import { Empresa } from "@/lib/types";
-import { Building2, ListFilter, PlusCircle } from "lucide-react";
+import { Building2, ListFilter, PlusCircle, Unplug } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "@/hooks/use-toast";
+import DialogConfirmAlert from "@/components/custom/DialogConfirmAlert";
+import axios from "axios";
 
 const FormSchema = z.object({
 	nome: z.string().min(2, { message: "Nome deve ter pelo menos 2 caracteres." }),
@@ -25,7 +27,7 @@ const FormSchema = z.object({
 	complemento: z.string().optional(),
 	email: z.string().email({ message: "E-mail inválido." }),
 	telefone: z.string().min(10, { message: "Telefone deve ter no mínimo 10 caracteres." }),
-	site: z.string().url({ message: "URL inválida." }).optional(),
+	site: z.string({ message: "URL inválida." }).optional(),
 });
 
 const dados: Empresa[] = [
@@ -189,17 +191,45 @@ const Empresas = () => {
 	});
 
 	function onSubmit(data: z.infer<typeof FormSchema>) {
+		const postObject = {
+			nome: data.nome,
+			cnpj: {
+				numeroCnpj: data.cnpj,
+			},
+			inscricaoEstadual: data.inscricao,
+			telefone: data.telefone,
+			fax: "",
+			email: {
+				enderecoEmail: data.email,
+			},
+			site: data.site,
+			observacao: "",
+			endereco: {
+				estado: data.uf,
+				cidade: data.cidade,
+				bairro: data.bairro,
+				logradouro: data.logradouro,
+				numero: data.numero,
+				complemento: data.complemento,
+				cep: data.cep,
+			},
+		};
+
+		axios
+			.post("https://localhost:5001/api/filial/v1/cadastrar", postObject)
+			.then(() => {
+				toast({ title: "Empresa cadastrada com sucesso" });
+			})
+			.catch(() => {
+				toast({
+					title: "Falha ao cadastrar",
+					description: "Houve um erro ao cadastrar uma empresa",
+					variant: "destructive",
+					action: <Unplug />,
+				});
+			});
+
 		setIsEditOpen(false);
-		toast({
-			title: "Você enviou os seguintes valores:",
-			description: (
-				<div className="w-full">
-					<pre className="mt-2 rounded-md bg-slate-950 p-5">
-						<code className="text-white">{JSON.stringify(data, null, 2)}</code>
-					</pre>
-				</div>
-			),
-		});
 	}
 
 	const handleFetch = () => {
@@ -231,12 +261,11 @@ const Empresas = () => {
 
 	const handleDelete = (empresa: Empresa) => {};
 	const handleDetalhes = (empresa: Empresa) => {};
-
-	// const handleSearchEmpresas = (event: React.ChangeEvent<HTMLInputElement>) => {
-	// 	const searchTerm = event.target.value.toLowerCase();
-	// 	const filteredData = dados.filter((empresa: any) => empresa.nome.toLowerCase().includes(searchTerm));
-	// 	setData(filteredData);
-	// };
+	const handleBuscaEmpresas = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const searchTerm = event.target.value.toLowerCase();
+		const filteredData = dados.filter((empresa: any) => empresa.nome.toLowerCase().includes(searchTerm));
+		setData(filteredData);
+	};
 
 	return (
 		<>
@@ -701,12 +730,17 @@ const Empresas = () => {
 									</FormItem>
 								)}
 							/>
-							<Button
-								type="submit"
-								className="col-span-8 mt-4"
+							<DialogConfirmAlert
+								title={"Cadastro de empresa"}
+								description={"Tem certeza que deseja cadastrar essa empresa?"}
 							>
-								Cadastrar
-							</Button>
+								<Button
+									type="submit"
+									className="col-span-8 mt-4"
+								>
+									Editar
+								</Button>
+							</DialogConfirmAlert>
 						</form>
 					</Form>
 				</DialogContent>
@@ -717,28 +751,37 @@ const Empresas = () => {
 					<Button
 						onClick={() => {
 							setIsAddOpen(true);
+							form.reset();
 						}}
 						className="gap-1"
-						size={"sm"}
 					>
 						<PlusCircle className="w-4 h-4" />
 						<div className="hidden lg:block ">Adicionar</div>
 					</Button>
-					<Button
+					{/* <Button
 						className="gap-1"
 						variant={"outline"}
-						size={"sm"}
 					>
 						<ListFilter className="w-4 h-4" />
 						<div className="hidden lg:block">Filtrar</div>
-					</Button>
+					</Button> */}
+				</div>
+				<div>
+					<div className="flex w-full max-w-sm items-center space-x-2">
+						<Input
+							type="text"
+							placeholder="Buscar..."
+							onInput={handleBuscaEmpresas}
+						/>
+					</div>
 				</div>
 			</div>
-
-			<DataTable
-				columns={ColumnsEmpresas({ onEdit: handleEdit, onDelete: handleDelete, onDetalhes: handleDetalhes })}
-				data={data}
-			/>
+			<div className="p-8 rounded-sm bg-background border ">
+				<DataTable
+					columns={ColumnsEmpresas({ onEdit: handleEdit, onDelete: handleDelete })}
+					data={data}
+				/>
+			</div>
 		</>
 	);
 };

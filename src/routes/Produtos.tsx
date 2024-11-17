@@ -1,7 +1,5 @@
-import PageLayout from "@/components/custom/PageLayout";
-
 const Produtos = () => {
-	return <></>;
+	return <div>teste</div>;
 };
 
 export default Produtos;

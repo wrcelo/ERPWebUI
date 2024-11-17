@@ -19,8 +19,8 @@ const PageLayout = ({ children }: { children?: ReactNode }) => {
 	return (
 		<>
 			<div className="text-lg bg-background">
-				<div className="flex gap-2 items-center h-14 p-6 font-semibold justify-between ">
-					<div className="flex gap-2 items-center ">
+				<div className="flex gap-2 items-center h-14 p-6 py-8 font-semibold justify-between border-b">
+					<div className="flex gap-2 items-center text-foreground">
 						{icon}
 						<h2>{displayName}</h2>
 					</div>
@@ -70,9 +70,8 @@ const PageLayout = ({ children }: { children?: ReactNode }) => {
 						</SheetContent>
 					</Sheet>
 				</div>
-				<Separator />
 			</div>
-			<div className="p-6">{children}</div>
+			<div className="p-6 ">{children}</div>
 		</>
 	);
 };

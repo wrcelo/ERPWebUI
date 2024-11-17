@@ -1,5 +1,6 @@
 import { NavMenuItem } from "@/components/custom/NavMenuItem";
 import PageLayout from "@/components/custom/PageLayout";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Box, Building2, ChartSpline, Hammer, Home, Plus, ShoppingCart, Users } from "lucide-react";
 import { Outlet } from "react-router-dom";
 
@@ -9,6 +10,7 @@ export const navMenu = [
 		icon: <Box className="w-5 h-5 lg:w-5 lg:h-5" />,
 		url: "/produtos",
 		submenus: [],
+		admin: false,
 	},
 	{
 		name: "Clientes",
@@ -21,59 +23,79 @@ export const navMenu = [
 				url: "/clientes/cadastro",
 			},
 		],
+		admin: false,
 	},
 	{
 		name: "Home",
 		icon: <Home className="w-5 h-5 lg:w-5 lg:h-5" />,
 		url: "/home",
 		submenus: [],
+		admin: false,
 	},
 	{
 		name: "Relatórios",
 		icon: <ChartSpline className="w-5 h-5 lg:w-5 lg:h-5" />,
 		url: "/relatorios",
 		submenus: [],
+		admin: true,
 	},
 	{
 		name: "Vendas",
 		icon: <ShoppingCart className="w-5 h-5 lg:w-5 lg:h-5" />,
 		url: "/vendas",
 		submenus: [],
+		admin: false,
 	},
 	{
 		name: "Utilitários",
 		icon: <Hammer className="w-5 h-5 lg:w-5 lg:h-5" />,
 		url: "/utilitarios",
 		submenus: [],
+		admin: true,
 	},
 	{
 		name: "Empresas",
 		icon: <Building2 className="w-5 h-5 lg:w-5 lg:h-5" />,
 		url: "/empresas",
 		submenus: [],
+		admin: false,
 	},
 ];
 export default function Root() {
 	return (
 		<>
 			<div className="flex flex-col w-screen h-screen lg:flex-row-reverse ">
-				<div className="h-full w-full lg:w-[calc(100vw-320px)] bg-primary-foreground/50">
+				<div className="h-full w-full lg:w-[calc(100vw-240px)] bg-muted-foreground/5">
 					<PageLayout>
 						<Outlet />
 					</PageLayout>
 				</div>
-				<div className="w-full border-t h-20 grid grid-cols-5 items-center px-6 lg:w-[320px] lg:flex lg:flex-col lg:items-start lg:p-4 lg:border-r lg:h-full lg:gap-2 ">
-					{navMenu.map((item, index) => {
-						return (
-							<NavMenuItem
-								key={index}
-								name={item.name}
-								url={item.url}
-								icon={item.icon}
-								index={index}
-							/>
-						);
-					})}
+				<div className="lg:border-r px-6 lg:p-4">
+					<div className="mb-8">
+						<div className="p-4 bg-muted-foreground/5 border rounded-md flex gap-4 items-center">
+							<Avatar>
+								<AvatarImage src="https://github.com/wrcelo.png" />
+								<AvatarFallback>wr</AvatarFallback>
+							</Avatar>
+							<div>
+								<h6 className="font-semibold text-foreground/70 text-sm">Marcelo Ramalho</h6>
+								<span className="text-xs font-semibold text-muted-foreground/80">Admin</span>
+							</div>
+						</div>
+					</div>
+					<div className="w-full h-20 grid grid-cols-5 items-center lg:w-[240px] lg:flex lg:flex-col lg:items-start lg:h-full lg:gap-6 lg:px-3">
+						{navMenu.map((item, index) => {
+							return (
+								<NavMenuItem
+									key={index}
+									name={item.name}
+									url={item.url}
+									icon={item.icon}
+									index={index}
+								/>
+							);
+						})}
+					</div>
 				</div>
 			</div>
 		</>

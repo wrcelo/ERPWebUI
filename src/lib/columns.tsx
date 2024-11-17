@@ -14,10 +14,9 @@ import { MoreHorizontal } from "lucide-react";
 interface ColumnsEmpresasProps {
 	onEdit: (empresa: Empresa) => void;
 	onDelete: (empresa: Empresa) => void;
-	onDetalhes: (empresa: Empresa) => void;
 }
 
-export function ColumnsEmpresas({ onEdit, onDelete, onDetalhes }: ColumnsEmpresasProps) {
+export function ColumnsEmpresas({ onEdit, onDelete }: ColumnsEmpresasProps) {
 	const columns: ColumnDef<Empresa>[] = [
 		{
 			id: "nome",
@@ -47,7 +46,6 @@ export function ColumnsEmpresas({ onEdit, onDelete, onDetalhes }: ColumnsEmpresa
 						<DropdownMenuContent align="end">
 							<DropdownMenuLabel>{empresa.nome}</DropdownMenuLabel>
 							<DropdownMenuSeparator />
-							<DropdownMenuItem onClick={() => onDetalhes(empresa)}>Detalhes</DropdownMenuItem>
 							<DropdownMenuItem onClick={() => onEdit(empresa)}>Editar</DropdownMenuItem>
 							<DropdownMenuItem onClick={() => onDelete(empresa)}>Excluir</DropdownMenuItem>
 						</DropdownMenuContent>

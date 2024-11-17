@@ -28,7 +28,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 							{headerGroup.headers.map((header) => {
 								return (
 									<TableHead
-										className={`text-base text-foreground`}
+										className={``}
 										key={header.id}
 									>
 										{header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
@@ -65,7 +65,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 							>
 								<div className="flex gap-2 justify-center items-center font-semibold text-muted-foreground text-xs">
 									<XCircle className="w-3 h-3" />
-									Não foi encontrado nenhuma empresa
+									Não foi encontrado nenhuma dado
 								</div>
 							</TableCell>
 						</TableRow>
