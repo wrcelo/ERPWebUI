@@ -12,48 +12,53 @@ import Utilitarios from "./routes/Utilitarios";
 import Empresas from "./routes/Empresas";
 import { Home } from "./routes/Home";
 import { Toaster } from "./components/ui/toaster";
+import Ajustes from "./routes/Configuracoes";
 
 const router = createBrowserRouter([
-	{
-		path: "/",
-		element: <Root />,
-		errorElement: <ErrorPage />,
-		children: [
-			{
-				path: "/home",
-				element: <Home />,
-			},
-			{
-				path: "/vendas",
-				element: <Vendas />,
-			},
-			{
-				path: "/clientes",
-				element: <Clientes />,
-			},
-			{
-				path: "/relatorios",
-				element: <Relatorios />,
-			},
-			{
-				path: "/produtos",
-				element: <Produtos />,
-			},
-			{
-				path: "/utilitarios",
-				element: <Utilitarios />,
-			},
-			{
-				path: "/empresas",
-				element: <Empresas />,
-			},
-		],
-	},
+  {
+    path: "/",
+    element: <Root />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "/home",
+        element: <Home />,
+      },
+      {
+        path: "/vendas",
+        element: <Vendas />,
+      },
+      {
+        path: "/clientes",
+        element: <Clientes />,
+      },
+      {
+        path: "/relatorios",
+        element: <Relatorios />,
+      },
+      {
+        path: "/produtos",
+        element: <Produtos />,
+      },
+      {
+        path: "/utilitarios",
+        element: <Utilitarios />,
+      },
+      {
+        path: "/empresas",
+        element: <Empresas />,
+      },
+      {
+        path: "/ajustes",
+        element: <Ajustes />,
+      },
+    ],
+  },
 ]);
 
 createRoot(document.getElementById("root")!).render(
-	<StrictMode>
-		<Toaster />
-		<RouterProvider router={router} />
-	</StrictMode>
+  <StrictMode>
+    <Toaster />
+    <RouterProvider router={router} />
+  </StrictMode>
 );
