@@ -13,52 +13,62 @@ import Empresas from "./routes/Empresas";
 import { Home } from "./routes/Home";
 import { Toaster } from "./components/ui/toaster";
 import Ajustes from "./routes/Configuracoes";
+import Fornecedores from "./routes/Fornecedores";
+import Representantes from "./routes/Representantes";
 
 const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Root />,
-    errorElement: <ErrorPage />,
-    children: [
-      {
-        path: "/home",
-        element: <Home />,
-      },
-      {
-        path: "/vendas",
-        element: <Vendas />,
-      },
-      {
-        path: "/clientes",
-        element: <Clientes />,
-      },
-      {
-        path: "/relatorios",
-        element: <Relatorios />,
-      },
-      {
-        path: "/produtos",
-        element: <Produtos />,
-      },
-      {
-        path: "/utilitarios",
-        element: <Utilitarios />,
-      },
-      {
-        path: "/empresas",
-        element: <Empresas />,
-      },
-      {
-        path: "/ajustes",
-        element: <Ajustes />,
-      },
-    ],
-  },
+	{
+		path: "/",
+		element: <Root />,
+		errorElement: <ErrorPage />,
+		children: [
+			{
+				path: "/home",
+				element: <Home />,
+			},
+			{
+				path: "/vendas",
+				element: <Vendas />,
+			},
+			{
+				path: "/clientes",
+				element: <Clientes />,
+			},
+			{
+				path: "/relatorios",
+				element: <Relatorios />,
+			},
+			{
+				path: "/produtos",
+				element: <Produtos />,
+			},
+			{
+				path: "/utilitarios",
+				element: <Utilitarios />,
+			},
+			{
+				path: "/empresas",
+				element: <Empresas />,
+			},
+			{
+				path: "/ajustes",
+				element: <Ajustes />,
+			},
+			{
+				path: "/fornecedores",
+				element: <Fornecedores />,
+			},
+			{
+				path: "/representantes",
+				element: <Representantes />,
+			},
+		],
+	},
 ]);
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <Toaster />
-    <RouterProvider router={router} />
-  </StrictMode>
+	<StrictMode>
+		<Toaster />
+		<RouterProvider router={router} />
+	</StrictMode>
 );
