@@ -1,5 +1,3 @@
-import { type LucideIcon } from "lucide-react";
-
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
 	SidebarGroup,
@@ -14,7 +12,6 @@ import {
 import { ChevronRightIcon } from "@radix-ui/react-icons";
 import { Link } from "react-router-dom";
 import { ReactNode } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 
 export function NavMain({
 	items,

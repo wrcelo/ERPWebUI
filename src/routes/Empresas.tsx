@@ -12,8 +12,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "@/hooks/use-toast";
 import api from "@/api/api";
-import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 
 const FormSchema = z.object({
 	id: z.string(),

@@ -4,8 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@radix-ui/react-separator";
-import { Building2, Phone, Mail, Globe, Printer, MapPin } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { Building2, Phone, Mail, Globe, Printer } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 export const DetalheEmpresa = () => {
