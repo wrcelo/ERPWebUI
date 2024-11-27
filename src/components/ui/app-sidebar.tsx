@@ -1,5 +1,5 @@
 import * as React from "react";
-import { AudioWaveform, Command, GalleryVerticalEnd, HandCoins, LayoutDashboard, Menu } from "lucide-react";
+import { HandCoins, LayoutDashboard, Menu } from "lucide-react";
 
 import { NavMain } from "@/components/ui/nav-main";
 import { NavUser } from "@/components/ui/nav-user";
