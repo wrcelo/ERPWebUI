@@ -3,7 +3,8 @@ import { HandCoins, LayoutDashboard, Menu } from "lucide-react";
 
 import { NavMain } from "@/components/ui/nav-main";
 import { NavUser } from "@/components/ui/nav-user";
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail, useSidebar } from "@/components/ui/sidebar";
+import { Button } from "./button";
 
 const data = {
 	user: {

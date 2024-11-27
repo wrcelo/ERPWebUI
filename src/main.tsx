@@ -12,12 +12,14 @@ import Utilitarios from "./routes/Utilitarios";
 import Empresas from "./routes/Empresas";
 import { Home } from "./routes/Home";
 import { Toaster } from "./components/ui/toaster";
-import Ajustes from "./routes/Configuracoes";
 import Fornecedores from "./routes/Fornecedores";
 import Representantes from "./routes/Representantes";
 import AuthProvider from "./components/auth-components/AuthProvider";
 import ProtectedRoute from "./components/auth-components/ProtectedRoute";
 import Login from "./routes/Login";
+import { DetalheEmpresa } from "./routes/DetalheEmpresa";
+import { ThemeProvider } from "./components/custom/ThemeProvider";
+import Ajustes from "./routes/Ajustes";
 
 const router = createBrowserRouter([
 	{
@@ -58,6 +60,10 @@ const router = createBrowserRouter([
 				element: <Empresas />,
 			},
 			{
+				path: "/empresas/:id",
+				element: <DetalheEmpresa />,
+			},
+			{
 				path: "/ajustes",
 				element: <Ajustes />,
 			},
@@ -76,9 +82,11 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
-		<Toaster />
-		<AuthProvider isSignedIn={true}>
-			<RouterProvider router={router} />
-		</AuthProvider>
+		<ThemeProvider>
+			<Toaster />
+			<AuthProvider isSignedIn={true}>
+				<RouterProvider router={router} />
+			</AuthProvider>
+		</ThemeProvider>
 	</StrictMode>
 );

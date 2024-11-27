@@ -23,12 +23,9 @@ export default function Root() {
 		<SidebarProvider>
 			<AppSidebar />
 			<main className="w-full p-6">
-				<div className="flex items-center gap-2 pb-4">
+				<div className="flex items-center gap-4 pb-6">
 					<SidebarTrigger />
-					<Separator
-						orientation="vertical"
-						className="mr-1 h-4"
-					/>
+
 					<Breadcrumb>
 						<BreadcrumbList>
 							{breadcrumbItems.map((item, index) => (

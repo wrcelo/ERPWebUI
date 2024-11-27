@@ -13,6 +13,7 @@ import {
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { logout } from "@/api/api";
+import { useNavigate } from "react-router-dom";
 
 export function NavUser({
 	user,
@@ -24,7 +25,7 @@ export function NavUser({
 	};
 }) {
 	const { isMobile } = useSidebar();
-
+	const navigate = useNavigate();
 	return (
 		<SidebarMenu>
 			<SidebarMenuItem>
@@ -71,7 +72,11 @@ export function NavUser({
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
 						<DropdownMenuGroup>
-							<DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={() => {
+									navigate("/ajustes");
+								}}
+							>
 								<Settings />
 								Configurações da conta
 							</DropdownMenuItem>

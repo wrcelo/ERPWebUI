@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ColumnsProdutos } from "@/lib/columns";
 import { Produto } from "@/lib/types";
-import { ListFilter, Plus } from "lucide-react";
+import { Import, ListFilter, Plus } from "lucide-react";
 import { useState } from "react";
 
 const Produtos = () => {
@@ -17,7 +17,7 @@ const Produtos = () => {
 			imgUrl: "https://png.pngtree.com/thumb_back/fw800/background/20231014/pngtree-background-of-clothing-texture-in-white-fabric-image_13613064.png",
 			descricao: "Pano legal",
 			cores: [
-				{ descricaoCor: "verde", hexadecimalCor: "#23E607" },
+				{ descricaoCor: "verde", hexadecimalCor: "#1d2b1b" },
 				{ descricaoCor: "azul", hexadecimalCor: "#eebb00" },
 			],
 			estoqueEmMetros: 120,
@@ -38,6 +38,12 @@ const Produtos = () => {
 					>
 						<Plus className="w-4 h-4" />
 						<div className="hidden lg:block ">Adicionar Produto</div>
+					</Button>
+					<Button
+						className="aspect-square"
+						variant={"outline"}
+					>
+						<Import />
 					</Button>
 					<Button
 						className="gap-1"

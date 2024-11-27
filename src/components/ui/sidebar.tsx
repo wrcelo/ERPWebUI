@@ -236,8 +236,7 @@ const SidebarTrigger = React.forwardRef<React.ElementRef<typeof Button>, React.C
 			}}
 			{...props}
 		>
-			{isMobile && <Menu />}
-			{!isMobile && (state === "expanded" ? <ChevronLeft /> : state === "collapsed" ? <ChevronRight /> : null)}
+			<Menu />
 			<span className="sr-only">Toggle Sidebar</span>
 		</Button>
 	);

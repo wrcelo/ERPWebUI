@@ -12,6 +12,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "@/hooks/use-toast";
 import api from "@/api/api";
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 
 const FormSchema = z.object({
 	id: z.string(),
@@ -29,141 +31,6 @@ const FormSchema = z.object({
 	telefone: z.string().min(10, { message: "Telefone deve ter no mínimo 10 caracteres." }),
 	site: z.string({ message: "URL inválida." }).optional(),
 });
-
-// const dados: Empresa[] = [
-// 	{
-// 		id: "1",
-// 		imgUrl: "https://www.intermercados.com.br/wp-content/uploads/2018/07/fachada-de-empresa.jpg",
-// 		nome: "Empresa Alpha",
-// 		cnpj: "12345678001",
-// 		inscricaoEstadual: "1234567890",
-// 		telefone: "(11) 1234-5678",
-// 		fax: "(11) 8765-4321",
-// 		email: "contato@empresaalpha.com",
-// 		site: "www.empresaalpha.com",
-// 		instagram: "@empresaalpha",
-// 		observacao: "Empresa líder em soluções tecnológicas.",
-// 		endereco: {
-// 			estado: "SP",
-// 			cidade: "São Paulo",
-// 			bairro: "Centro",
-// 			logradouro: "Rua Alfa",
-// 			numero: "100",
-// 			complemento: "Sala 5",
-// 			cep: "01000-000",
-// 		},
-// 	},
-// {
-// 	id: "2",
-// 	imgUrl: "https://carvalhoprintoffice.com.br/wp-content/uploads/2020/09/revestimento-acm-fachada.jpg",
-// 	nome: "Empresa Beta",
-// 	cnpj: "98765432001",
-// 	inscricaoEstadual: "0987654321",
-// 	telefone: "(21) 2345-6789",
-// 	fax: "(21) 9876-5432",
-// 	email: "contato@empresabeta.com",
-// 	site: "www.empresabeta.com",
-// 	instagram: "@empresabeta",
-// 	observacao: "Especializada em consultoria empresarial.",
-// 	endereco: {
-// 		estado: "RJ",
-// 		cidade: "Rio de Janeiro",
-// 		bairro: "Copacabana",
-// 		logradouro: "Avenida Atlântica",
-// 		numero: "200",
-// 		complemento: "Cobertura",
-// 		cep: "22000-000",
-// 	},
-// },
-// {
-// 	id: "3",
-// 	imgUrl: "https://comunicacao.hdvisual.net/imagens/empresa-de-fachada-loja.jpg",
-// 	nome: "Empresa Gamma",
-// 	cnpj: "19283746001",
-// 	inscricaoEstadual: "1928374654",
-// 	telefone: "(31) 3456-7890",
-// 	fax: "(31) 6543-2109",
-// 	email: "contato@empresagamma.com",
-// 	site: "www.empresagamma.com",
-// 	instagram: "@empresagamma",
-// 	observacao: "Foco em inovação e desenvolvimento de software.",
-// 	endereco: {
-// 		estado: "MG",
-// 		cidade: "Belo Horizonte",
-// 		bairro: "Savassi",
-// 		logradouro: "Rua Gamma",
-// 		numero: "300",
-// 		complemento: "Andar 2",
-// 		cep: "30100-000",
-// 	},
-// },
-// {
-// 	id: "4",
-// 	imgUrl: "https://aaxesquadrias.com.br/wp-content/uploads/2021/07/1640f-fachada-pele-de-vidro-3.jpg",
-// 	nome: "Empresa Delta",
-// 	cnpj: "56473829001",
-// 	inscricaoEstadual: "5647382910",
-// 	telefone: "(41) 4567-8901",
-// 	fax: "(41) 1098-7654",
-// 	email: "contato@empresadelta.com",
-// 	site: "www.empresadelta.com",
-// 	instagram: "@empresadelta",
-// 	observacao: "Empresa com foco em logística e transporte.",
-// 	endereco: {
-// 		estado: "PR",
-// 		cidade: "Curitiba",
-// 		bairro: "Batel",
-// 		logradouro: "Rua Delta",
-// 		numero: "400",
-// 		complemento: "Loja A",
-// 		cep: "80200-000",
-// 	},
-// },
-// {
-// 	id: "5",
-// 	imgUrl: "https://static9.depositphotos.com/1279189/1195/i/450/depositphotos_11956071-stock-photo-modern-business-unit.jpg",
-// 	nome: "Empresa Epsilon",
-// 	cnpj: "10293847561",
-// 	inscricaoEstadual: "1029384765",
-// 	telefone: "(51) 5678-9012",
-// 	fax: "(51) 2109-8765",
-// 	email: "contato@empresaepsilon.com",
-// 	site: "www.empresaepsilon.com",
-// 	instagram: "@empresaepsilon",
-// 	observacao: "Empresa atuando no setor agrícola.",
-// 	endereco: {
-// 		estado: "RS",
-// 		cidade: "Porto Alegre",
-// 		bairro: "Moinhos de Vento",
-// 		logradouro: "Rua Epsilon",
-// 		numero: "500",
-// 		complemento: "Casa",
-// 		cep: "90000-000",
-// 	},
-// },
-// {
-// 	id: "2",
-// 	imgUrl: "https://carvalhoprintoffice.com.br/wp-content/uploads/2020/09/revestimento-acm-fachada.jpg",
-// 	nome: "Empresa Beta",
-// 	cnpj: "98765432001",
-// 	inscricaoEstadual: "0987654321",
-// 	telefone: "(21) 2345-6789",
-// 	fax: "(21) 9876-5432",
-// 	email: "contato@empresabeta.com",
-// 	site: "www.empresabeta.com",
-// 	instagram: "@empresabeta",
-// 	observacao: "Especializada em consultoria empresarial.",
-// 	endereco: {
-// 		estado: "RJ",
-// 		cidade: "Rio de Janeiro",
-// 		bairro: "Copacabana",
-// 		logradouro: "Avenida Atlântica",
-// 		numero: "200",
-// 		complemento: "Cobertura",
-// 		cep: "22000-000",
-// 	},
-// },
-// ];
 
 const Empresas = () => {
 	const [currentStep, setCurrentStep] = useState(1); // Controla a etapa atual do formulário
@@ -278,7 +145,7 @@ const Empresas = () => {
 	}
 
 	const handleFetch = () => {
-		api.get("https://localhost:5001/api/filial/v1/listar").then((data) => {
+		api.get("/api/filial/v1/listar").then((data) => {
 			data.status == 200 ? setData(data.data) : console.error(data.data);
 		});
 	};
@@ -886,16 +753,17 @@ const Empresas = () => {
 						<Plus className="w-4 h-4" />
 						<div className="hidden lg:block ">Adicionar Empresa</div>
 					</Button>
-					<Button
-						className="gap-1"
-						variant={"outline"}
-					>
-						<ListFilter className="w-4 h-4" />
-						<div className="hidden lg:block">Filtrar</div>
-					</Button>
 				</div>
 				<div>
-					<div className="flex w-full max-w-sm items-center space-x-2">
+					<div className="flex w-full max-w-sm items-center space-x-2 lg:w-80">
+						<Button
+							className="gap-1"
+							variant={"outline"}
+						>
+							<ListFilter className="w-4 h-4" />
+							<div className="hidden lg:block">Filtrar</div>
+						</Button>
+
 						<Input
 							type="text"
 							placeholder="Buscar..."

@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import placeholderImagemEmpresa from "@/assets/placeholder.png";
+import { useNavigate } from "react-router-dom";
 
 interface ColumnsEmpresasProps {
 	onEdit: (empresa: Empresa) => void;
@@ -106,6 +107,7 @@ export function ColumnsEmpresas({ onEdit, onDelete }: ColumnsEmpresasProps) {
 			id: "actions",
 			cell: ({ row }) => {
 				const produto = row.original;
+				const navigate = useNavigate();
 				return (
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
@@ -118,10 +120,11 @@ export function ColumnsEmpresas({ onEdit, onDelete }: ColumnsEmpresasProps) {
 							</Button>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent align="end">
-							<DropdownMenuLabel>{produto.nome}</DropdownMenuLabel>
+							<DropdownMenuLabel>Ações</DropdownMenuLabel>
 							<DropdownMenuSeparator />
 							<DropdownMenuItem onClick={() => onEdit(produto)}>Editar</DropdownMenuItem>
 							<DropdownMenuItem onClick={() => onDelete(produto)}>Excluir</DropdownMenuItem>
+							<DropdownMenuItem onClick={() => navigate("/empresas/" + row.original.id)}>Ver Detalhes</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
 				);
