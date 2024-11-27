@@ -1,32 +1,8 @@
 import * as React from "react";
-import {
-	AudioWaveform,
-	BookOpen,
-	Bot,
-	Box,
-	Building2,
-	ChartSpline,
-	Command,
-	Frame,
-	GalleryVerticalEnd,
-	Hammer,
-	HandCoins,
-	Home,
-	LayoutDashboard,
-	Map,
-	Menu,
-	PieChart,
-	Settings2,
-	ShoppingCart,
-	SquareMenu,
-	SquareTerminal,
-	Users,
-} from "lucide-react";
+import { AudioWaveform, Command, GalleryVerticalEnd, HandCoins, LayoutDashboard, Menu } from "lucide-react";
 
-import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
-import { NavUser } from "@/components/nav-user";
-import { TeamSwitcher } from "@/components/team-switcher";
+import { NavMain } from "@/components/ui/nav-main";
+import { NavUser } from "@/components/ui/nav-user";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from "@/components/ui/sidebar";
 
 const data = {
@@ -35,23 +11,6 @@ const data = {
 		email: "marcelomramalho@gmail.com",
 		avatar: "https://github.com/wrcelo.png",
 	},
-	teams: [
-		{
-			name: "Acme Inc",
-			logo: <GalleryVerticalEnd />,
-			plan: "Enterprise",
-		},
-		{
-			name: "Acme Corp.",
-			logo: <AudioWaveform />,
-			plan: "Startup",
-		},
-		{
-			name: "Evil Corp.",
-			logo: <Command />,
-			plan: "Free",
-		},
-	],
 	navMain: [
 		{
 			title: "Painéis",
@@ -69,11 +28,12 @@ const data = {
 				},
 				{
 					title: "Relatórios",
-					url: "#",
+					url: "/relatorios",
 				},
 			],
 		},
 		{
+			isActive: true,
 			title: "Menu",
 			url: "/ajustes",
 			icon: <Menu />,
@@ -101,6 +61,7 @@ const data = {
 			],
 		},
 		{
+			isActive: true,
 			title: "Financeiro",
 			url: "#",
 			icon: <HandCoins />,

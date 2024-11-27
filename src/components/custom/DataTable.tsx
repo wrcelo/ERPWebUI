@@ -1,5 +1,3 @@
-"use client";
-
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable, getPaginationRowModel } from "@tanstack/react-table";
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -47,7 +45,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 							>
 								{row.getVisibleCells().map((cell) => (
 									<TableCell
-										className={`py-3 text-xs lg:text-sm lg:py-4  ${cell.column.columnDef.id == "actions" ? "w-0" : ""} ${
+										className={`py-3 text-xs lg:text-sm lg:py-4 ${cell.column.columnDef.id == "actions" ? "w-0" : ""} ${
 											cell.column.columnDef.id == "nome" ? "font-semibold text-foreground/80" : ""
 										}`}
 										key={cell.id}
@@ -72,7 +70,7 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 					)}
 				</TableBody>
 			</Table>
-			<div className="flex items-center justify-end space-x-2 ">
+			<div className="flex items-center justify-end space-x-2 mt-4">
 				<Button
 					variant="outline"
 					size="sm"

@@ -1,5 +1,3 @@
-import PageLayout from "@/components/custom/PageLayout";
-
 const Relatorios = () => {
 	return <></>;
 };

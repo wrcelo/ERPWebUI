@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ErrorPage from "./error-page";
-import Root from "./routes/RootLayout";
+import Root from "./routes/Root";
 import Vendas from "./routes/Vendas";
 import Clientes from "./routes/Clientes";
 import Relatorios from "./routes/Relatorios";
@@ -15,11 +15,18 @@ import { Toaster } from "./components/ui/toaster";
 import Ajustes from "./routes/Configuracoes";
 import Fornecedores from "./routes/Fornecedores";
 import Representantes from "./routes/Representantes";
+import AuthProvider from "./components/auth-components/AuthProvider";
+import ProtectedRoute from "./components/auth-components/ProtectedRoute";
+import Login from "./routes/Login";
 
 const router = createBrowserRouter([
 	{
 		path: "/",
-		element: <Root />,
+		element: (
+			<ProtectedRoute>
+				<Root />
+			</ProtectedRoute>
+		),
 		errorElement: <ErrorPage />,
 		children: [
 			{
@@ -64,11 +71,14 @@ const router = createBrowserRouter([
 			},
 		],
 	},
+	{ path: "/login", element: <Login /> },
 ]);
 
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
 		<Toaster />
-		<RouterProvider router={router} />
+		<AuthProvider isSignedIn={true}>
+			<RouterProvider router={router} />
+		</AuthProvider>
 	</StrictMode>
 );

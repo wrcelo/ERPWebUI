@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { Cliente, Cores, Empresa, Produto } from "@/lib/types";
+import { Cores, Empresa, Produto } from "@/lib/types";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
+import placeholderImagemEmpresa from "@/assets/placeholder.png";
 
 interface ColumnsEmpresasProps {
 	onEdit: (empresa: Empresa) => void;
@@ -18,11 +19,6 @@ interface ColumnsEmpresasProps {
 interface ColumnsProdutosProps {
 	onEdit: (produto: Produto) => void;
 	onDelete: (produto: Produto) => void;
-}
-
-interface ColumnsClientesProps {
-	onEdit: (produto: Cliente) => void;
-	onDelete: (produto: Cliente) => void;
 }
 
 // export function ColumnsEmpresas({ onEdit, onDelete }: ColumnsEmpresasProps) {
@@ -73,13 +69,16 @@ export function ColumnsEmpresas({ onEdit, onDelete }: ColumnsEmpresasProps) {
 		{
 			id: "imgUrl",
 			accessorKey: "imgUrl",
-			header: "Imagem",
+			header: ({}) => {
+				return <div>Imagem</div>;
+			},
+
 			cell: ({ row }) => {
 				return (
-					<div className="">
+					<div>
 						<img
-							className="w-16 h-16 rounded border object-cover"
-							src={row.original.imgUrl}
+							className="w-10 h-10 lg:w-14 lg:h-14 rounded border object-cover"
+							src={row.original.imgUrl ?? placeholderImagemEmpresa}
 						/>
 					</div>
 				);
@@ -89,6 +88,19 @@ export function ColumnsEmpresas({ onEdit, onDelete }: ColumnsEmpresasProps) {
 			id: "nome",
 			accessorKey: "nome",
 			header: "Nome",
+			cell: ({ row }) => {
+				const nome = row.original.nome;
+				return <div className="text-ellipsis line-clamp-1 min-w-32">{nome}</div>;
+			},
+		},
+		{
+			id: "cnpj",
+			accessorKey: "cnpj",
+			header: "CNPJ",
+			cell: ({ row }) => {
+				const cnpj = row.original.cnpj;
+				return <div className="text-ellipsis line-clamp-1">{cnpj}</div>;
+			},
 		},
 		{
 			id: "actions",
@@ -172,63 +184,6 @@ export function ColumnsProdutos({ onEdit, onDelete }: ColumnsProdutosProps) {
 					</div>
 				);
 			},
-		},
-		{
-			id: "actions",
-			cell: ({ row }) => {
-				const produto = row.original;
-				return (
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<Button
-								variant="ghost"
-								className="h-8 w-8 p-0"
-							>
-								<span className="sr-only">Abrir</span>
-								<MoreHorizontal className="h-4 w-4" />
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent align="end">
-							<DropdownMenuLabel>{produto.nome}</DropdownMenuLabel>
-							<DropdownMenuSeparator />
-							<DropdownMenuItem onClick={() => onEdit(produto)}>Editar</DropdownMenuItem>
-							<DropdownMenuItem onClick={() => onDelete(produto)}>Excluir</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu>
-				);
-			},
-		},
-	];
-
-	return columns;
-}
-
-export function ColumnsClientes({ onEdit, onDelete }: ColumnsClientesProps) {
-	const columns: ColumnDef<Cliente>[] = [
-		{
-			id: "imgUrl",
-			accessorKey: "imgUrl",
-			header: "Imagem",
-			cell: ({ row }) => {
-				return (
-					<div className="">
-						<img
-							className="w-16 h-16 rounded border object-cover"
-							src={row.original.imgUrl}
-						/>
-					</div>
-				);
-			},
-		},
-		{
-			id: "nome",
-			accessorKey: "nome",
-			header: "Nome",
-		},
-		{
-			id: "descricao",
-			accessorKey: "descricao",
-			header: "Descrição",
 		},
 		{
 			id: "actions",
