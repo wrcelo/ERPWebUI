@@ -10,6 +10,7 @@ export type Empresa = {
 	site?: string;
 	instagram?: string;
 	observacao?: string;
+	nomeImagemFilial?: string;
 	endereco?: {
 		estado?: string;
 		cidade?: string;

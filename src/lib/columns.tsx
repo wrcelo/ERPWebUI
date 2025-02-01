@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
 import placeholderImagemEmpresa from "@/assets/placeholder.png";
 import { useNavigate } from "react-router-dom";
+import { Badge } from "@/components/ui/badge";
 
 interface ColumnsEmpresasProps {
 	onEdit: (empresa: Empresa) => void;
@@ -75,11 +76,12 @@ export function ColumnsEmpresas({ onEdit, onDelete }: ColumnsEmpresasProps) {
 			},
 
 			cell: ({ row }) => {
+				const navigate = useNavigate();
 				return (
-					<div>
+					<div onClick={() => navigate("/empresas/" + row.original.id)}>
 						<img
 							className="w-10 h-10 lg:w-14 lg:h-14 rounded border object-cover"
-							src={row.original.imgUrl ?? placeholderImagemEmpresa}
+							src={row.original.nomeImagemFilial ? "https://localhost:5001/imagens/" + row.original.nomeImagemFilial : placeholderImagemEmpresa}
 						/>
 					</div>
 				);
@@ -100,7 +102,7 @@ export function ColumnsEmpresas({ onEdit, onDelete }: ColumnsEmpresasProps) {
 			header: "CNPJ",
 			cell: ({ row }) => {
 				const cnpj = row.original.cnpj;
-				return <div className="text-ellipsis line-clamp-1">{cnpj}</div>;
+				return <Badge>{cnpj}</Badge>;
 			},
 		},
 		{

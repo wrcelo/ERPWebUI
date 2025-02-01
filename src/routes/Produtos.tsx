@@ -10,19 +10,7 @@ import { useState } from "react";
 const Produtos = () => {
 	const handleDelete = () => {};
 	const handleEdit = () => {};
-	const dadosProdutos: Produto[] = [
-		{
-			id: "1",
-			nome: "Tecido",
-			imgUrl: "https://png.pngtree.com/thumb_back/fw800/background/20231014/pngtree-background-of-clothing-texture-in-white-fabric-image_13613064.png",
-			descricao: "Pano legal",
-			cores: [
-				{ descricaoCor: "verde", hexadecimalCor: "#1d2b1b" },
-				{ descricaoCor: "azul", hexadecimalCor: "#eebb00" },
-			],
-			estoqueEmMetros: 120,
-		},
-	];
+	const dadosProdutos: Produto[] = [];
 
 	const [isOpen, setIsOpen] = useState(false);
 

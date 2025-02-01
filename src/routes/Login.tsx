@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "@/hooks/use-toast";
 import { login } from "@/api/api";
+import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
 	email: z.string().email({
@@ -58,79 +59,70 @@ const Login = () => {
 	}
 
 	return (
-		<div className="flex items-center justify-center h-dvh bg-gray-100">
-			<Card className="w-[350px]">
-				<CardHeader>
-					<CardTitle>Login</CardTitle>
-					<CardDescription>Entre com suas credenciais para entrar no sistema</CardDescription>
-				</CardHeader>
-				<CardContent>
-					<Form {...form}>
-						<form
-							onSubmit={form.handleSubmit(onSubmit)}
-							className="space-y-8"
-						>
-							<FormField
-								control={form.control}
-								name="email"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Email</FormLabel>
-										<FormControl>
-											<Input
-												placeholder="admin@grupogm2.com.br"
-												{...field}
-											/>
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-							<FormField
-								control={form.control}
-								name="password"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Senha</FormLabel>
-										<FormControl>
-											<Input
-												type="password"
-												placeholder=""
-												{...field}
-											/>
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-							<Button
-								type="submit"
-								className="w-full"
-								disabled={isLoading}
+		<div>
+			<div className="h-dvh w-dvw px-4">
+				<div className="flex items-center justify-center w-full h-full">
+					<div className="w-[350px]">
+						<>
+							<h1 className="text-2xl font-semibold">Login</h1>
+							<p className="text-muted-foreground text-xs">Insira suas credenciais de acesso para entrar.</p>
+						</>
+						<Form {...form}>
+							<form
+								onSubmit={form.handleSubmit(onSubmit)}
+								className="space-y-4"
 							>
-								{isLoading ? (
-									<>
-										<LoaderCircle className="animate-spin" /> Entrando...
-									</>
-								) : (
-									"Entrar"
-								)}
-							</Button>
-						</form>
-					</Form>
-				</CardContent>
-				<CardFooter className="flex justify-center">
-					<p className="text-sm text-gray-600">
-						Ainda não tem uma conta?{" "}
-						<a
-							href="/signup"
-							className="text-blue-600 hover:underline"
-						>
-							Registrar
-						</a>
-					</p>
-				</CardFooter>
-			</Card>
+								<FormField
+									control={form.control}
+									name="email"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Email</FormLabel>
+											<FormControl>
+												<Input
+													placeholder="admin@grupogm2.com.br"
+													{...field}
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name="password"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Senha</FormLabel>
+											<FormControl>
+												<Input
+													type="password"
+													placeholder=""
+													{...field}
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<Button
+									type="submit"
+									className="w-full"
+									disabled={isLoading}
+								>
+									{isLoading ? (
+										<>
+											<LoaderCircle className="animate-spin" /> Entrando...
+										</>
+									) : (
+										"Entrar"
+									)}
+								</Button>
+							</form>
+						</Form>
+					</div>
+				</div>
+			</div>
 		</div>
 	);
 };

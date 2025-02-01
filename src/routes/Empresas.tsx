@@ -1,10 +1,9 @@
-import { DataTable } from "@/components/custom/DataTable";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { ColumnsEmpresas } from "@/lib/columns";
 import { Empresa } from "@/lib/types";
-import { Building2, Check, ListFilter, Plus, Unplug } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Building2, Check, FileIcon, ListFilter, LoaderCircle, Plus, Unplug } from "lucide-react";
+import { SetStateAction, useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,6 +11,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "@/hooks/use-toast";
 import api from "@/api/api";
+import { DataTableEmpresas } from "@/components/custom/DataTableEmpresas";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
 const FormSchema = z.object({
 	id: z.string(),
@@ -28,6 +29,7 @@ const FormSchema = z.object({
 	email: z.string().email({ message: "E-mail inválido." }),
 	telefone: z.string().min(10, { message: "Telefone deve ter no mínimo 10 caracteres." }),
 	site: z.string({ message: "URL inválida." }).optional(),
+	imgUrl: z.any(),
 });
 
 const Empresas = () => {
@@ -36,6 +38,8 @@ const Empresas = () => {
 	const [isAddOpen, setIsAddOpen] = useState(false);
 	const [isEditOpen, setIsEditOpen] = useState(false);
 	const [empresaSelecionada, setEmpresaSelecionada] = useState<Empresa>();
+	const [preview, setPreview] = useState<SetStateAction<any>>();
+	const [file, setFile] = useState<File | null>();
 
 	const handleNextStep = () => setCurrentStep((prev) => Math.min(prev + 1, 2)); // Limita a 2ª etapa
 	const handlePrevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1)); // Limita a 1ª etapa
@@ -57,36 +61,42 @@ const Empresas = () => {
 			email: "",
 			telefone: "",
 			site: "",
+			imgUrl: "",
 		},
 	});
 
 	function onSubmit(data: z.infer<typeof FormSchema>) {
-		const postObject = {
-			nome: data.nome,
-			cnpj: {
-				numeroCnpj: data.cnpj,
-			},
-			inscricaoEstadual: data.inscricao,
-			telefone: data.telefone,
-			fax: "",
-			email: {
-				enderecoEmail: data.email,
-			},
-			site: data.site,
-			observacao: "",
-			endereco: {
-				estado: data.uf,
-				cidade: data.cidade,
-				bairro: data.bairro,
-				logradouro: data.logradouro,
-				numero: data.numero,
-				complemento: data.complemento,
-				cep: data.cep,
-			},
-		};
+		console.log(file);
+
+		const formData = new FormData();
+
+		formData.append("nome", data.nome);
+		formData.append("NumeroCnpj", data.cnpj); // Alterando a chave para "cnpj.NumeroCnpj"
+		formData.append("inscricaoEstadual", data.inscricao ?? "");
+		formData.append("telefone", data.telefone);
+		formData.append("fax", "");
+		formData.append("enderecoEmail", data.email);
+		formData.append("site", data.site ?? "");
+		formData.append("observacao", "");
+
+		if (file) {
+			formData.append("imagem", file);
+		}
+
+		formData.append("estado", data.uf); // "estado" corresponde a EnderecoDto.Estado
+		formData.append("cidade", data.cidade);
+		formData.append("bairro", data.bairro);
+		formData.append("logradouro", data.logradouro);
+		formData.append("numero", data.numero);
+		formData.append("complemento", data.complemento ?? "");
+		formData.append("cep", data.cep);
 
 		api
-			.post("api/filial/v1/cadastrar", postObject)
+			.post("api/filial/v1/cadastrar", formData, {
+				headers: {
+					"Content-Type": "multipart/form-data",
+				},
+			})
 			.then(() => {
 				toast({ title: "Empresa cadastrada com sucesso", action: <Check />, variant: "default" });
 				handleFetch();
@@ -103,31 +113,34 @@ const Empresas = () => {
 	}
 
 	function onEditSubmit(data: z.infer<typeof FormSchema>) {
-		const postObject = {
-			id: data.id,
-			nome: data.nome || null,
-			cnpj: data.cnpj ? { numeroCnpj: data.cnpj } : null,
-			inscricaoEstadual: data.inscricao || null,
-			telefone: data.telefone || null,
-			fax: "",
-			email: data.email ? { enderecoEmail: data.email } : null,
-			site: data.site || null,
-			observacao: "",
-			endereco: {
-				logradouro: data.logradouro || null,
-				numero: data.numero || null,
-				complemento: data.complemento || null,
-				bairro: data.bairro || null,
-				cidade: data.cidade || null,
-				estado: data.uf || null,
-				cep: data.cep || null,
-			},
-		};
+		const formData = new FormData();
+
+		formData.append("nome", data.nome);
+		formData.append("NumeroCnpj", data.cnpj); // Alterando a chave para "cnpj.NumeroCnpj"
+		formData.append("inscricaoEstadual", data.inscricao ?? "");
+		formData.append("telefone", data.telefone);
+		formData.append("fax", "");
+		formData.append("enderecoEmail", data.email);
+		formData.append("site", data.site ?? "");
+		formData.append("observacao", "");
+		formData.append("id", data.id);
+
+		if (file) {
+			formData.append("imagem", file);
+		}
+
+		formData.append("estado", data.uf); // "estado" corresponde a EnderecoDto.Estado
+		formData.append("cidade", data.cidade);
+		formData.append("bairro", data.bairro);
+		formData.append("logradouro", data.logradouro);
+		formData.append("numero", data.numero);
+		formData.append("complemento", data.complemento ?? "");
+		formData.append("cep", data.cep);
 
 		api
-			.put("api/filial/v1/editar", postObject)
+			.put("api/filial/v1/editar", formData)
 			.then(() => {
-				toast({ title: "Empresa atualizada", description: `${postObject.nome} atualizado com sucesso!`, action: <Check /> });
+				toast({ title: "Empresa atualizada", description: `${formData.get("nome")} atualizado com sucesso!`, action: <Check /> });
 				handleFetch();
 			})
 			.catch(() => {
@@ -142,8 +155,18 @@ const Empresas = () => {
 		setIsEditOpen(false);
 	}
 
+	const handleImage = (e: any) => {
+		const img = e.target.files[0];
+		setFile(img);
+		if (img) {
+			const urlImage = URL.createObjectURL(img);
+			setPreview(urlImage);
+		}
+	};
+
 	const handleFetch = () => {
-		api.get("/api/filial/v1/listar").then((data) => {
+		api.get("/v1/filiais").then((data) => {
+			console.log(data);
 			data.status == 200 ? setData(data.data) : console.error(data.data);
 		});
 	};
@@ -154,6 +177,7 @@ const Empresas = () => {
 
 	const handleEdit = (empresa: Empresa) => {
 		setIsEditOpen(true);
+		setPreview(null);
 		if (empresa) {
 			form.setValue("id", empresa.id);
 			form.setValue("nome", empresa.nome ? empresa.nome : "");
@@ -169,12 +193,14 @@ const Empresas = () => {
 			form.setValue("email", empresa.email ? empresa.email : "");
 			form.setValue("telefone", empresa.telefone ? empresa.telefone : "");
 			form.setValue("site", empresa.site ? empresa.site : "");
+			form.setValue("imgUrl", empresa.imgUrl ? empresa.imgUrl : "");
 		}
 		setEmpresaSelecionada(empresa);
 		setCurrentStep(1);
 	};
 
 	const handleDelete = (empresa: Empresa) => {
+		console.log(empresa);
 		api.delete("/api/filial/v1/excluir/id/" + empresa.id).then(() => {
 			toast({ title: "Empresa excluída com sucesso", action: <Check />, variant: "default" });
 			handleFetch();
@@ -263,6 +289,25 @@ const Empresas = () => {
 											</FormItem>
 										)}
 									/>
+									<FormField
+										control={form.control}
+										name="imgUrl"
+										render={() => (
+											<FormItem className="col-span-8">
+												<FormLabel>Imagem</FormLabel>
+												<FormControl>
+													<Input
+														onChange={handleImage}
+														type="file"
+													/>
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<Avatar>
+										<AvatarImage src={preview} />
+									</Avatar>
 								</>
 							)}
 
@@ -535,6 +580,25 @@ const Empresas = () => {
 											</FormItem>
 										)}
 									/>
+									<FormField
+										control={form.control}
+										name="imgUrl"
+										render={({ field }) => (
+											<FormItem className="col-span-8">
+												<FormLabel>Imagem</FormLabel>
+												<FormControl>
+													<Input
+														type="file"
+														onChange={handleImage}
+													/>
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<Avatar>
+										<AvatarImage src={preview} />
+									</Avatar>
 								</>
 							)}
 
@@ -743,25 +807,18 @@ const Empresas = () => {
 					<Button
 						onClick={() => {
 							setIsAddOpen(true);
+							setPreview(null);
 							setCurrentStep(1);
 							form.reset();
 						}}
 						className="gap-2"
 					>
 						<Plus className="w-4 h-4" />
-						<div className="hidden lg:block ">Adicionar Empresa</div>
+						<div className="">Adicionar</div>
 					</Button>
 				</div>
 				<div>
 					<div className="flex w-full max-w-sm items-center space-x-2 lg:w-80">
-						<Button
-							className="gap-1"
-							variant={"outline"}
-						>
-							<ListFilter className="w-4 h-4" />
-							<div className="hidden lg:block">Filtrar</div>
-						</Button>
-
 						<Input
 							type="text"
 							placeholder="Buscar..."
@@ -771,7 +828,7 @@ const Empresas = () => {
 				</div>
 			</div>
 			<div>
-				<DataTable
+				<DataTableEmpresas
 					columns={ColumnsEmpresas({
 						onEdit: handleEdit,
 						onDelete: handleDelete,

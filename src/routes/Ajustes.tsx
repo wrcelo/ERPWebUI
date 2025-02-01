@@ -11,7 +11,7 @@ const Ajustes = () => {
 				<p className="text-muted-foreground ">Configurações do sistema e gerencie os membros da equipe</p>
 			</div>
 			<div className="grid grid-cols-4">
-				<Card>
+				<Card className="col-span-4 lg:col-span-1">
 					<CardHeader>
 						<CardTitle className="text-xl">Sistema</CardTitle>
 						<CardDescription>Ajustes relacionado ao sistema</CardDescription>
