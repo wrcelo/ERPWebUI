@@ -48,3 +48,10 @@ export type Cliente = {
 export type User = {
 	id: number;
 };
+
+export type Cor = {
+	idCor: string;
+	nomeCor: string;
+	descricaoCor: string;
+	codigoCor: string;
+};

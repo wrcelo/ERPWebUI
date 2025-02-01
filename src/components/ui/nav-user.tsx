@@ -14,6 +14,7 @@ import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/c
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { logout } from "@/api/api";
 import { useNavigate } from "react-router-dom";
+import { prependOnceListener } from "process";
 
 export function NavUser({
 	user,
@@ -26,6 +27,7 @@ export function NavUser({
 }) {
 	const { isMobile } = useSidebar();
 	const navigate = useNavigate();
+	const { toggleSidebar } = useSidebar();
 	return (
 		<SidebarMenu>
 			<SidebarMenuItem>
@@ -74,6 +76,7 @@ export function NavUser({
 						<DropdownMenuGroup>
 							<DropdownMenuItem
 								onClick={() => {
+									toggleSidebar();
 									navigate("/ajustes");
 								}}
 							>
