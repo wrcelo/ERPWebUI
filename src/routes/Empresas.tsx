@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { ColumnsEmpresas } from "@/lib/columns";
 import { Empresa } from "@/lib/types";
-import { Building2, Check, FileIcon, ListFilter, LoaderCircle, Plus, Unplug } from "lucide-react";
+import { Building2, Check, CircleAlert, FileIcon, ListFilter, LoaderCircle, Plus, Unplug } from "lucide-react";
 import { SetStateAction, useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -165,10 +165,17 @@ const Empresas = () => {
 	};
 
 	const handleFetch = () => {
-		api.get("/v1/filiais").then((data) => {
-			console.log(data);
-			data.status == 200 ? setData(data.data) : console.error(data.data);
-		});
+		api
+			.get("/v1/filiais")
+			.then((data) => {
+				data.status == 200 ? setData(data.data) : console.error(data.data);
+			})
+			.catch((data) => {
+				if (data.status == 403) {
+					setData([]);
+					toast({ title: "Você não possui permissão para visualizar as empresas", action: <CircleAlert />, variant: "default" });
+				}
+			});
 	};
 
 	useEffect(() => {

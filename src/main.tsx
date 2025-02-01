@@ -20,6 +20,7 @@ import Login from "./routes/Login";
 import { DetalheEmpresa } from "./routes/DetalheEmpresa";
 import { ThemeProvider } from "./components/custom/ThemeProvider";
 import Ajustes from "./routes/Ajustes";
+import Cores from "./routes/Cores";
 
 const router = createBrowserRouter([
 	{
@@ -74,6 +75,10 @@ const router = createBrowserRouter([
 			{
 				path: "/representantes",
 				element: <Representantes />,
+			},
+			{
+				path: "/cores",
+				element: <Cores />,
 			},
 		],
 	},

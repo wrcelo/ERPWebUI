@@ -8,6 +8,7 @@ import {
 	SidebarMenuSub,
 	SidebarMenuSubButton,
 	SidebarMenuSubItem,
+	useSidebar,
 } from "@/components/ui/sidebar";
 import { ChevronRightIcon } from "@radix-ui/react-icons";
 import { Link } from "react-router-dom";
@@ -27,6 +28,7 @@ export function NavMain({
 		}[];
 	}[];
 }) {
+	const { toggleSidebar } = useSidebar();
 	return (
 		<SidebarGroup>
 			<SidebarGroupLabel>Principal</SidebarGroupLabel>
@@ -47,7 +49,7 @@ export function NavMain({
 								</SidebarMenuButton>
 							</CollapsibleTrigger>
 							<CollapsibleContent>
-								<SidebarMenuSub>
+								<SidebarMenuSub onClick={toggleSidebar}>
 									{item.items?.map((subItem) => (
 										<SidebarMenuSubItem key={subItem.title}>
 											<SidebarMenuSubButton asChild>

@@ -9,27 +9,28 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Cliente } from "@/lib/types";
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table";
 import { ChevronLeft, ChevronRight, MoreHorizontal, Plus, XCircle } from "lucide-react";
 
 const Clientes = () => {
-	const dadosClientes = [
-		{
-			id: "1",
-			nome: "Farm Rio",
-			imgUrl: "https://riomarca-miami.s3.amazonaws.com/2023/10/logo-farm.jpg",
-			descricao: "Empresa de vestuário do Rio de Janeiro",
-		},
-		{
-			id: "2",
-			nome: "Empório dos Tecidos",
-			imgUrl:
-				"https://img.freepik.com/vetores-premium/fios-de-fibra-tecidos-juntos-fibras-de-roupas-em-varias-cores-detalhes-de-um-tecido-ou-modelo-de-logotipo-de-modelo-vetorial-de-tecido_100655-2775.jpg?semt=ais_hybrid",
-			descricao: "Empresa de tecidos de Minas Gerais",
-		},
+	const dadosClientes: Cliente[] = [
+		// {
+		// 	id: "1",
+		// 	nome: "Farm Rio",
+		// 	imgUrl: "https://riomarca-miami.s3.amazonaws.com/2023/10/logo-farm.jpg",
+		// 	descricao: "Empresa de vestuário do Rio de Janeiro",
+		// },
+		// {
+		// 	id: "2",
+		// 	nome: "Empório dos Tecidos",
+		// 	imgUrl:
+		// 		"https://img.freepik.com/vetores-premium/fios-de-fibra-tecidos-juntos-fibras-de-roupas-em-varias-cores-detalhes-de-um-tecido-ou-modelo-de-logotipo-de-modelo-vetorial-de-tecido_100655-2775.jpg?semt=ais_hybrid",
+		// 	descricao: "Empresa de tecidos de Minas Gerais",
+		// },
 	];
 
-	const columns: ColumnDef<(typeof dadosClientes)[0]>[] = [
+	const columns: ColumnDef<Cliente>[] = [
 		{
 			id: "imgUrl",
 			accessorKey: "imgUrl",

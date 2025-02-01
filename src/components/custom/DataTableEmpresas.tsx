@@ -1,6 +1,6 @@
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable, getPaginationRowModel } from "@tanstack/react-table";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ChevronLeft, ChevronRight, LoaderCircle } from "lucide-react";
+import { ChevronLeft, ChevronRight, LoaderCircle, XCircle } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { Empresa } from "@/lib/types";
@@ -68,8 +68,8 @@ export function DataTableEmpresas<T, TValue>({ columns, data }: DataTableProps<E
 									className="h-24 text-center"
 								>
 									<div className="flex gap-2 justify-center items-center font-semibold text-muted-foreground text-xs">
-										<LoaderCircle className="w-3 h-3 animate-spin" />
-										Carregando
+										<XCircle className="w-3 h-3" />
+										Não foi encontrado nenhum dado
 									</div>
 								</TableCell>
 							</TableRow>

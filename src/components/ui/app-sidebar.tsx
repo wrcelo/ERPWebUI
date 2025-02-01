@@ -1,9 +1,10 @@
 import * as React from "react";
-import { HandCoins, LayoutDashboard, Menu } from "lucide-react";
+import { HammerIcon, HandCoins, LayoutDashboard, Menu } from "lucide-react";
 
 import { NavMain } from "@/components/ui/nav-main";
 import { NavUser } from "@/components/ui/nav-user";
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail, useSidebar } from "@/components/ui/sidebar";
+import { Button } from "./button";
 
 const data = {
 	user: {
@@ -16,16 +17,8 @@ const data = {
 			title: "Painéis",
 			url: "#",
 			icon: <LayoutDashboard />,
-			isActive: true,
+			isActive: false,
 			items: [
-				{
-					title: "Início",
-					url: "#",
-				},
-				{
-					title: "Financeiro",
-					url: "#",
-				},
 				{
 					title: "Relatórios",
 					url: "/relatorios",
@@ -61,7 +54,7 @@ const data = {
 			],
 		},
 		{
-			isActive: true,
+			isActive: false,
 			title: "Financeiro",
 			url: "#",
 			icon: <HandCoins />,
@@ -77,6 +70,18 @@ const data = {
 				{
 					title: "Contas",
 					url: "#",
+				},
+			],
+		},
+		{
+			isActive: false,
+			title: "Utilitários",
+			url: "#",
+			icon: <HammerIcon />,
+			items: [
+				{
+					title: "Cores",
+					url: "/cores",
 				},
 			],
 		},
