@@ -75,7 +75,7 @@ const Cores = () => {
 							</div>
 							<div className="flex gap-2 items-center">
 								<Pencil className="w-4 h-4" />
-								<Trash className="w-4 h-4" />
+								<Trash className="w-4 h-4 text-destructive" />
 							</div>
 						</div>
 					);
