@@ -21,6 +21,7 @@ import { DetalheEmpresa } from "./routes/DetalheEmpresa";
 import { ThemeProvider } from "./components/custom/ThemeProvider";
 import Ajustes from "./routes/Ajustes";
 import Cores from "./routes/Cores";
+import Bancos from "./routes/Bancos";
 
 const router = createBrowserRouter([
 	{
@@ -79,6 +80,10 @@ const router = createBrowserRouter([
 			{
 				path: "/cores",
 				element: <Cores />,
+			},
+			{
+				path: "/bancos",
+				element: <Bancos />,
 			},
 		],
 	},

@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { Cores, Empresa, Produto } from "@/lib/types";
+import { Cor, Cores, Empresa, Produto } from "@/lib/types";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -21,6 +21,10 @@ interface ColumnsEmpresasProps {
 interface ColumnsProdutosProps {
 	onEdit: (produto: Produto) => void;
 	onDelete: (produto: Produto) => void;
+}
+interface ColumnsCoresProps {
+	onEdit: (cor: Cor) => void;
+	onDelete: (cor: Cor) => void;
 }
 
 // export function ColumnsEmpresas({ onEdit, onDelete }: ColumnsEmpresasProps) {
@@ -210,6 +214,58 @@ export function ColumnsProdutos({ onEdit, onDelete }: ColumnsProdutosProps) {
 							<DropdownMenuSeparator />
 							<DropdownMenuItem onClick={() => onEdit(produto)}>Editar</DropdownMenuItem>
 							<DropdownMenuItem onClick={() => onDelete(produto)}>Excluir</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
+				);
+			},
+		},
+	];
+
+	return columns;
+}
+
+export function ColumnsCores({ onEdit, onDelete }: ColumnsCoresProps) {
+	const columns: ColumnDef<Cor>[] = [
+		{
+			id: "nomeCor",
+			accessorKey: "nomeCor",
+			header: "Nome",
+		},
+		{
+			id: "codigoCor",
+			accessorKey: "codigoCor",
+			header: "Código",
+		},
+		{
+			id: "descricaoCor",
+			accessorKey: "descricaoCor",
+			header: "Descrição",
+			cell: ({ row }) => {
+				const cor = row.original;
+				return <>{cor.descricaoCor || <div className="text-muted-foreground/40">Sem descrição</div>}</>;
+			},
+		},
+
+		{
+			id: "actions",
+			cell: ({ row }) => {
+				const cor = row.original;
+				return (
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button
+								variant="ghost"
+								className="h-8 w-8 p-0"
+							>
+								<span className="sr-only">Abrir</span>
+								<MoreHorizontal className="h-4 w-4" />
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align="end">
+							<DropdownMenuLabel>{cor.nomeCor}</DropdownMenuLabel>
+							<DropdownMenuSeparator />
+							<DropdownMenuItem onClick={() => onEdit(cor)}>Editar</DropdownMenuItem>
+							<DropdownMenuItem onClick={() => onDelete(cor)}>Excluir</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
 				);

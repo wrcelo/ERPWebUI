@@ -1,26 +1,25 @@
-import { ColumnDef, flexRender, getCoreRowModel, useReactTable, getPaginationRowModel } from "@tanstack/react-table";
+import { Cor } from "@/lib/types";
+import { ColumnDef, getCoreRowModel, useReactTable, getPaginationRowModel, flexRender } from "@tanstack/react-table";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ChevronLeft, ChevronRight, XCircle } from "lucide-react";
-import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader } from "../ui/card";
 import { useNavigate } from "react-router-dom";
-import { Produto } from "@/lib/types";
-import { Separator } from "../ui/separator";
+import { Separator } from "@radix-ui/react-separator";
+import { XCircle, ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "../ui/button";
+import { Card, CardHeader, CardContent } from "../ui/card";
 
-interface DataTableProps<Produto, TValue> {
-	columns: ColumnDef<Produto, TValue>[];
-	data: Produto[];
+interface DataTableProps<Cor, TValue> {
+	columns: ColumnDef<Cor, TValue>[];
+	data: Cor[];
 }
-
-export function DataTableProdutos<TValue>({ columns, data }: DataTableProps<Produto, TValue>) {
+export function DataTableCores<TValue>({ columns, data }: DataTableProps<Cor, TValue>) {
 	const table = useReactTable({
 		data,
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 		getPaginationRowModel: getPaginationRowModel(),
 	});
-
 	const navigate = useNavigate();
+
 	return (
 		<>
 			<div className="rounded hidden md:block">
@@ -96,52 +95,30 @@ export function DataTableProdutos<TValue>({ columns, data }: DataTableProps<Prod
 			</div>
 			<div className="grid grid-cols-2 gap-2 md:hidden">
 				{table.getRowModel().rows.map((item) => {
-					const produto = item.original;
+					const cor = item.original;
 					return (
 						<Card
 							className="col-span-2 sm:col-span-1"
 							onClick={() => {
-								navigate("/produtos/" + produto.id);
+								navigate("/cores/" + cor.idCor);
 							}}
 						>
 							<CardHeader className="pb-3">
 								<div className="flex w-full justify-between items-center">
-									<div className="font-bold text-lg">{produto.nome || "Produto sem nome"}</div>
-									<div className="text-xs text-muted-foreground">ID: {produto.id}</div>
+									<div className="font-bold text-lg">{cor.nomeCor || "cor sem nome"}</div>
+									<div className="text-xs text-muted-foreground">ID: {cor.idCor}</div>
 								</div>
 							</CardHeader>
 							<CardContent>
-								{produto.imgUrl && (
+								{
 									<div className="mb-4 w-full flex gap-4">
-										<img
-											src={produto.imgUrl}
-											alt={produto.nome || "Imagem do produto"}
-											className="rounded-md object-cover aspect-square w-12"
-										/>
-										<p className="text-muted-foreground text-xs line-clamp-3">{produto.descricao || "Sem descrição disponível"}</p>
+										<p className="text-muted-foreground text-xs line-clamp-3">{cor.descricaoCor || "Sem descrição disponível"}</p>
 									</div>
-								)}
+								}
 								<Separator className="my-4" />
-								{produto.cores && produto.cores.length > 0 && (
-									<div className="flex space-x-2">
-										{produto.cores.map((cor) => (
-											<div
-												key={cor.descricaoCor}
-												className="flex items-center space-x-1"
-											>
-												<div
-													className="w-3 h-3 rounded-full border"
-													style={{ backgroundColor: cor.hexadecimalCor }}
-												/>
-												<span className="text-xs text-muted-foreground">{cor.descricaoCor}</span>
-											</div>
-										))}
-									</div>
-								)}
 								<div className="flex justify-between items-center mt-4">
 									<span className="text-sm text-muted-foreground">Estoque</span>
 									<div className="border-b w-[calc(100%-125px)] h-1"></div>
-									<span className="text-lg text-muted-foreground">{produto.estoqueEmMetros}m</span>
 								</div>
 							</CardContent>
 						</Card>
@@ -151,3 +128,5 @@ export function DataTableProdutos<TValue>({ columns, data }: DataTableProps<Prod
 		</>
 	);
 }
+
+export default DataTableCores;

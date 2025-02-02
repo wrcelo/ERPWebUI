@@ -82,6 +82,10 @@ const data = {
 					title: "Cores",
 					url: "/cores",
 				},
+				{
+					title: "Bancos",
+					url: "/bancos",
+				},
 			],
 		},
 	],

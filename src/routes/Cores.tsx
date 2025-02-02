@@ -4,9 +4,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import { Cor } from "@/lib/types";
-import { Check, PaintBucket, Pencil, Plus, Trash } from "lucide-react";
+import { Check, CircleAlert, PaintBucket, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { ColumnsCores } from "@/lib/columns";
+import DataTableCores from "@/components/custom/DataTableCores";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -16,7 +18,6 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
 const Cores = () => {
@@ -25,6 +26,7 @@ const Cores = () => {
 	}, []);
 
 	const [openEdit, setOpenEdit] = useState<boolean>(false);
+	const [openDelete, setOpenDelete] = useState<boolean>(false);
 	const [idCorEdit, setIdCorEdit] = useState<string>("");
 	const [codigoCor, setCodigoCor] = useState("");
 	const [nomeCor, setNomeCor] = useState("");
@@ -84,7 +86,7 @@ const Cores = () => {
 			setCoresCadastradas(data.dados);
 			setTodasCores(data.dados);
 		} catch (error) {
-			toast({ title: "Erro ao carregar cores", action: <Check /> });
+			toast({ title: "Erro ao carregar cores", action: <CircleAlert /> });
 		}
 	};
 
@@ -134,6 +136,7 @@ const Cores = () => {
 	};
 
 	const handleDelete = (cor: Cor) => {
+		setOpenDelete(true);
 		setIdCorEdit(cor.idCor);
 	};
 
@@ -219,53 +222,14 @@ const Cores = () => {
 						/>
 					</div>
 				</div>
-				{coresCadastradas.map((cor) => {
-					return (
-						<div
-							key={cor.idCor}
-							className="border-b pt-1 pb-3 flex justify-between"
-						>
-							<div className="flex flex-col">
-								<span>{cor.nomeCor}</span>
-								<span className="text-xs text-secondary-foreground">{cor.codigoCor}</span>
-							</div>
-							<div className="flex gap-2 items-center">
-								<Button
-									size={"icon"}
-									variant={"outline"}
-									onClick={() => handleEdit(cor)}
-								>
-									<Pencil className="w-4 h-4" />
-								</Button>
-
-								<AlertDialog>
-									<AlertDialogTrigger asChild>
-										<Button
-											onClick={() => handleDelete(cor)}
-											size={"icon"}
-											variant={"outline"}
-											className="border-destructive"
-										>
-											<Trash className="w-4 h-4 text-destructive" />
-										</Button>
-									</AlertDialogTrigger>
-									<AlertDialogContent>
-										<AlertDialogHeader>
-											<AlertDialogTitle>Tem certeza?</AlertDialogTitle>
-											<AlertDialogDescription>Essa ação irá deletar essa cor permanentemente</AlertDialogDescription>
-										</AlertDialogHeader>
-										<AlertDialogFooter>
-											<AlertDialogCancel>Cancelar</AlertDialogCancel>
-											<AlertDialogAction onClick={handleSubmitDelete}>Sim, quero deletar</AlertDialogAction>
-										</AlertDialogFooter>
-									</AlertDialogContent>
-								</AlertDialog>
-							</div>
-						</div>
-					);
-				})}
+				<DataTableCores
+					columns={ColumnsCores({
+						onEdit: handleEdit,
+						onDelete: handleDelete,
+					})}
+					data={coresCadastradas}
+				/>
 			</div>
-			{/* <div className="flex grid-cols-1 gap-2 mb-10 lg:w-1/3"></div> */}
 
 			<Dialog
 				open={openEdit}
@@ -303,6 +267,21 @@ const Cores = () => {
 					</div>
 				</DialogContent>
 			</Dialog>
+			<AlertDialog
+				open={openDelete}
+				onOpenChange={setOpenDelete}
+			>
+				<AlertDialogContent>
+					<AlertDialogHeader>
+						<AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
+						<AlertDialogDescription>Deseja deletar essa cor permanentemente?</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel>Cancelar</AlertDialogCancel>
+						<AlertDialogAction onClick={handleSubmitDelete}>Sim, quero deletar</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
 		</div>
 	);
 };
