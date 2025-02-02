@@ -52,12 +52,12 @@ export const login = async ({ email, password }: { email: string; password: stri
 
 export const logout = async () => {
 	try {
-		const data = await axios.post(apiIdentityUrl + "logout");
-		console.log(data);
-		if (data.status === 200) {
-			localStorage.removeItem("authToken");
-			window.location.href = "/login";
-		}
+		// const data = await axios.post(apiIdentityUrl + "logout");
+
+		// if (data.status === 200) {
+		localStorage.removeItem("authToken");
+		window.location.href = "/login";
+		// }
 	} catch (error) {}
 };
 

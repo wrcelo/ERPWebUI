@@ -1,15 +1,10 @@
 import { ColumnDef, flexRender, getCoreRowModel, useReactTable, getPaginationRowModel } from "@tanstack/react-table";
-
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ChevronLeft, ChevronRight, XCircle } from "lucide-react";
 import { Button } from "../ui/button";
-import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
+import { Card, CardContent, CardHeader } from "../ui/card";
 import { useNavigate } from "react-router-dom";
 import { Produto } from "@/lib/types";
-import placeholder from "@/assets/placeholder.png";
-import { Badge } from "../ui/badge";
-import { Label } from "@radix-ui/react-dropdown-menu";
-import { Input } from "../ui/input";
 import { Separator } from "../ui/separator";
 
 interface DataTableProps<Produto, TValue> {
@@ -147,7 +142,7 @@ export function DataTableProdutos<T, TValue>({ columns, data }: DataTableProps<P
 								<div className="flex justify-between items-center mt-4">
 									<span className="text-sm text-muted-foreground">Estoque</span>
 									<div className="border-b w-[calc(100%-125px)] h-1"></div>
-									<span className="text-lg font-semibold">{produto.estoqueEmMetros}m</span>
+									<span className="text-lg text-muted-foreground">{produto.estoqueEmMetros}m</span>
 								</div>
 							</CardContent>
 						</Card>

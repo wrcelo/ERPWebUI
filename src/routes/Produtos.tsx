@@ -10,7 +10,16 @@ import { useState } from "react";
 const Produtos = () => {
 	const handleDelete = () => {};
 	const handleEdit = () => {};
-	const dadosProdutos: Produto[] = [];
+	const dadosProdutos: Produto[] = [
+		{
+			id: "01",
+			nome: "Sarja",
+			imgUrl: "https://leadster.com.br/blog/wp-content/uploads/2023/04/O-que-e-o-marketing-de-produto.webp",
+			descricao: "Sarja tal",
+			cores: undefined,
+			estoqueEmMetros: 100,
+		},
+	];
 
 	const [isOpen, setIsOpen] = useState(false);
 

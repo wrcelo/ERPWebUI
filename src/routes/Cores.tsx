@@ -179,9 +179,8 @@ const Cores = () => {
 			</div>
 
 			<div className="grid grid-cols-1 gap-2">
-				<h2 className="text-2xl">Cores</h2>
 				<div className="grid grid-cols-5 gap-2">
-					<h3 className="col-span-5">Buscar cor</h3>
+					<h3 className="col-span-5 text-xl">Buscar cor</h3>
 					<Input
 						className="mb-4 col-span-4"
 						placeholder="Nome"
