@@ -14,7 +14,7 @@ api.interceptors.request.use(
 		if (token) {
 			config.headers.Authorization = `Bearer ${token}`;
 		}
-		// console.log("Request Intercepted:", config.url);
+
 		return config;
 	},
 	(error) => {
@@ -24,7 +24,6 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
 	(response) => {
-		// console.log("Response Intercepted:", response);
 		return response;
 	},
 	(error) => {
