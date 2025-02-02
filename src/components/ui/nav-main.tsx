@@ -28,7 +28,7 @@ export function NavMain({
 		}[];
 	}[];
 }) {
-	const { toggleSidebar } = useSidebar();
+	const { toggleSidebar, isMobile } = useSidebar();
 	return (
 		<SidebarGroup>
 			<SidebarGroupLabel>Principal</SidebarGroupLabel>
@@ -49,7 +49,13 @@ export function NavMain({
 								</SidebarMenuButton>
 							</CollapsibleTrigger>
 							<CollapsibleContent>
-								<SidebarMenuSub onClick={toggleSidebar}>
+								<SidebarMenuSub
+									onClick={() => {
+										if (isMobile) {
+											toggleSidebar();
+										}
+									}}
+								>
 									{item.items?.map((subItem) => (
 										<SidebarMenuSubItem key={subItem.title}>
 											<SidebarMenuSubButton asChild>

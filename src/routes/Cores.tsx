@@ -4,9 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import { Cor } from "@/lib/types";
-import { Check, PaintBucket, Pencil, Trash } from "lucide-react";
+import { Check, PaintBucket, Pencil, Plus, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -24,7 +24,7 @@ const Cores = () => {
 		handleFetch();
 	}, []);
 
-	const [openEdit, setOpenEdit] = useState(false);
+	const [openEdit, setOpenEdit] = useState<boolean>(false);
 	const [idCorEdit, setIdCorEdit] = useState<string>("");
 	const [codigoCor, setCodigoCor] = useState("");
 	const [nomeCor, setNomeCor] = useState("");
@@ -34,6 +34,7 @@ const Cores = () => {
 	const [nomeCorEdit, setNomeCorEdit] = useState("");
 	const [descricaoCorEdit, setDescricaoCorEdit] = useState("");
 	const [todasCores, setTodasCores] = useState<Cor[]>([]);
+	const [openAdicionar, setOpenAdicionar] = useState<boolean>(false);
 
 	const handleCodigoCor = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setCodigoCor(e.target.value);
@@ -93,10 +94,15 @@ const Cores = () => {
 			descricaoCor: descricaoCor,
 			codigoCor: codigoCor,
 		};
-		api.post("/v1/cores", postData).then((data) => {
-			toast({ title: data.data.mensagem, action: <Check /> });
-			handleFetch();
-		});
+		api
+			.post("/v1/cores", postData)
+			.then((data) => {
+				toast({ title: data.data.mensagem, action: <Check /> });
+				handleFetch();
+			})
+			.finally(() => {
+				setOpenAdicionar(false);
+			});
 	};
 
 	const handleSubmitEdit = () => {
@@ -146,51 +152,72 @@ const Cores = () => {
 	};
 
 	return (
-		<div>
-			<div className="grid grid-cols-1 gap-2 mb-10">
-				<div className="grid grid-cols-10 gap-2">
-					<Input
-						className="col-span-7"
-						onChange={handleNomeCor}
-						placeholder="Nome da cor"
-						value={nomeCor}
-					/>
-					<Input
-						className="col-span-3"
-						onChange={handleCodigoCor}
-						placeholder="Código"
-						value={codigoCor}
-					/>
-					<Textarea
-						className="col-span-10"
-						onChange={handleDescricaoCor}
-						placeholder="Descrição"
-						value={descricaoCor}
-					/>
-					<Button
-						type="submit"
-						className="col-span-10"
-						onClick={handleSubmit}
-					>
-						<PaintBucket />
-						Adicionar
-					</Button>
-				</div>
-			</div>
-
+		<div className="">
 			<div className="grid grid-cols-1 gap-2">
-				<div className="grid grid-cols-5 gap-2">
-					<h3 className="col-span-5 text-xl">Buscar cor</h3>
-					<Input
-						className="mb-4 col-span-4"
-						placeholder="Nome"
-						onChange={handleBuscaNome}
-					/>
-					<Input
-						className="col-span-1"
-						placeholder="Cod"
-						onChange={handleBuscaCod}
-					/>
+				<div className="flex justify-between gap-6">
+					<div>
+						<Dialog
+							open={openAdicionar}
+							onOpenChange={setOpenAdicionar}
+						>
+							<DialogTrigger asChild>
+								<Button>
+									<Plus />
+									<span className="hidden lg:block">Adicionar cor</span>
+								</Button>
+							</DialogTrigger>
+							<DialogContent>
+								<DialogHeader>
+									<DialogTitle>Adicionar cor</DialogTitle>
+									<DialogDescription>Cadastre uma cor</DialogDescription>
+									<DialogContent>
+										<div className="grid grid-cols-10 gap-2 lg:flex lg:flex-col lg:w-full">
+											<h3 className="col-span-5 text-xl">Adicionar cor</h3>
+
+											<Input
+												className="col-span-7"
+												onChange={handleNomeCor}
+												placeholder="Nome da cor"
+												value={nomeCor}
+											/>
+											<Input
+												className="col-span-3"
+												onChange={handleCodigoCor}
+												placeholder="Código"
+												value={codigoCor}
+											/>
+											<Textarea
+												className="col-span-10"
+												onChange={handleDescricaoCor}
+												placeholder="Descrição"
+												value={descricaoCor}
+											/>
+											<Button
+												type="submit"
+												className="col-span-10"
+												onClick={handleSubmit}
+											>
+												<PaintBucket />
+												Adicionar
+											</Button>
+										</div>
+									</DialogContent>
+								</DialogHeader>
+							</DialogContent>
+						</Dialog>
+					</div>
+					<div className="flex gap-2">
+						<Input
+							className="mb-4 w-3/4"
+							placeholder="Buscar por nome"
+							onChange={handleBuscaNome}
+						/>
+						<Input
+							className="w-1/4"
+							placeholder="Cód"
+							onChange={handleBuscaCod}
+						/>
+					</div>
 				</div>
 				{coresCadastradas.map((cor) => {
 					return (
@@ -238,6 +265,8 @@ const Cores = () => {
 					);
 				})}
 			</div>
+			{/* <div className="flex grid-cols-1 gap-2 mb-10 lg:w-1/3"></div> */}
+
 			<Dialog
 				open={openEdit}
 				onOpenChange={setOpenEdit}
