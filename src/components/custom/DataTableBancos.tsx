@@ -1,19 +1,18 @@
-import { ColumnDef, flexRender, getCoreRowModel, useReactTable, getPaginationRowModel } from "@tanstack/react-table";
+import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight, XCircle } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
-import { Empresa } from "@/lib/types";
 import { Badge } from "../ui/badge";
-import placeholder from "@/assets/placeholder.png";
-import { useNavigate } from "react-router-dom";
+import { Banco } from "@/lib/types";
 
-interface DataTableProps<Empresa, TValue> {
-	columns: ColumnDef<Empresa, TValue>[];
-	data: Empresa[];
+interface DataTableProps<Banco, TValue> {
+	columns: ColumnDef<Banco, TValue>[];
+	data: Banco[];
 }
 
-export function DataTableEmpresas<TValue>({ columns, data }: DataTableProps<Empresa, TValue>) {
+export function DataTableBancos<TValue>({ columns, data }: DataTableProps<Banco, TValue>) {
 	const table = useReactTable({
 		data,
 		columns,
@@ -97,28 +96,23 @@ export function DataTableEmpresas<TValue>({ columns, data }: DataTableProps<Empr
 			</div>
 			<div className="flex flex-col gap-2 md:hidden">
 				{table.getRowModel().rows.map((item) => {
-					const empresa = item.original;
-					console.log(empresa);
+					const banco = item.original;
+
 					return (
 						<Card
-							key={empresa.id}
+							key={banco.idBanco}
 							className="w-full flex gap-2"
-							onClick={() => navigate("/empresas/" + empresa.id)}
+							onClick={() => navigate("/bancos/" + banco.idBanco)}
 						>
-							<img
-								className="rounded-l border-r object-cover aspect-square w-[80px]"
-								src={empresa.nomeImagemFilial ? "https://localhost:5001/imagens/" + empresa.nomeImagemFilial : placeholder}
-							/>
-
 							<div className="p-2 flex items-center">
 								<div className="flex flex-col gap-1">
-									<span className="line-clamp-1 font-semibold text-sm">{empresa.nome}</span>
+									<span className="line-clamp-1 font-semibold text-sm">{banco.nomeBanco}</span>
 									<div className="flex gap-2 flex-wrap">
 										<Badge
 											variant="secondary"
 											className="p-1 py-0"
 										>
-											{empresa.cnpj}
+											{banco.siteBanco}
 										</Badge>
 									</div>
 								</div>

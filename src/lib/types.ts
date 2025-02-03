@@ -55,3 +55,10 @@ export type Cor = {
 	descricaoCor: string;
 	codigoCor: string;
 };
+
+export type Banco = {
+	idBanco: string;
+	nomeBanco: string;
+	codigoBanco: string;
+	siteBanco: string;
+};
