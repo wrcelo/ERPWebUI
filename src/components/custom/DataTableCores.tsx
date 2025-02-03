@@ -98,6 +98,7 @@ export function DataTableCores<TValue>({ columns, data }: DataTableProps<Cor, TV
 					const cor = item.original;
 					return (
 						<Card
+							key={cor.idCor}
 							className="col-span-2 sm:col-span-1"
 							onClick={() => {
 								navigate("/cores/" + cor.idCor);
