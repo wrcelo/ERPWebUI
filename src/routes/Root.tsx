@@ -1,4 +1,3 @@
-import { NavMenuItem } from "@/components/custom/NavMenuItem";
 import { AppSidebar } from "@/components/ui/app-sidebar";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
@@ -8,7 +7,6 @@ import { Outlet } from "react-router-dom";
 
 export default function Root() {
 	const location = useLocation();
-
 	const pathnames = location.pathname.split("/").filter((x) => x);
 
 	const breadcrumbItems = [

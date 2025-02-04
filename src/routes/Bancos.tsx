@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 import { toast } from "@/hooks/use-toast";
-import { Check, CircleAlert } from "lucide-react";
+import { Check, CircleAlert, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -24,11 +24,18 @@ const Bancos = () => {
 	const [codigoEdit, setCodigoEdit] = useState("");
 	const [siteEdit, setSiteEdit] = useState("");
 	const [open, setOpen] = useState<boolean>(false);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const handleFetch = () => {
-		api.get("/v1/bancos").then((data) => {
-			setBancos(data.data.dados);
-		});
+		setIsLoading(true);
+		api
+			.get("/v1/bancos")
+			.then((data) => {
+				setBancos(data.data.dados);
+			})
+			.finally(() => {
+				setIsLoading(false);
+			});
 	};
 
 	const handleEdit = (banco: Banco) => {
@@ -84,7 +91,10 @@ const Bancos = () => {
 					onOpenChange={setOpen}
 				>
 					<DialogTrigger asChild>
-						<Button className="mb-6">Adicionar Banco</Button>
+						<Button className="mb-6">
+							<Plus />
+							Adicionar banco
+						</Button>
 					</DialogTrigger>
 					<DialogContent>
 						<DialogHeader>
@@ -128,6 +138,7 @@ const Bancos = () => {
 				</Dialog>
 			</div>
 			<DataTableBancos
+				isLoading={isLoading}
 				columns={ColumnsBancos({
 					onEdit: handleEdit,
 					onDelete: handleDelete,

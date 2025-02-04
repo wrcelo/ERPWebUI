@@ -1,7 +1,7 @@
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from "@tanstack/react-table";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, ChevronRight, XCircle } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader, XCircle } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { Badge } from "../ui/badge";
@@ -10,9 +10,10 @@ import { Banco } from "@/lib/types";
 interface DataTableProps<Banco, TValue> {
 	columns: ColumnDef<Banco, TValue>[];
 	data: Banco[];
+	isLoading: boolean;
 }
 
-export function DataTableBancos<TValue>({ columns, data }: DataTableProps<Banco, TValue>) {
+export function DataTableBancos<TValue>({ columns, data, isLoading }: DataTableProps<Banco, TValue>) {
 	const table = useReactTable({
 		data,
 		columns,
@@ -67,8 +68,17 @@ export function DataTableBancos<TValue>({ columns, data }: DataTableProps<Banco,
 									className="h-24 text-center"
 								>
 									<div className="flex gap-2 justify-center items-center font-semibold text-muted-foreground text-xs">
-										<XCircle className="w-3 h-3" />
-										Não foi encontrado nenhum dado
+										{isLoading ? (
+											<div className="flex items-center gap-2">
+												<Loader className="w-3 h-3 animate-spin" />
+												Carregando
+											</div>
+										) : (
+											<div className="flex items-center gap-2">
+												<XCircle className="w-3 h-3" />
+												Não foi encontrado nenhum dado
+											</div>
+										)}
 									</div>
 								</TableCell>
 							</TableRow>

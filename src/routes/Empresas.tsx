@@ -66,8 +66,6 @@ const Empresas = () => {
 	});
 
 	function onSubmit(data: z.infer<typeof FormSchema>) {
-		console.log(file);
-
 		const formData = new FormData();
 
 		formData.append("nome", data.nome);
@@ -207,7 +205,6 @@ const Empresas = () => {
 	};
 
 	const handleDelete = (empresa: Empresa) => {
-		console.log(empresa);
 		api.delete("/api/filial/v1/excluir/id/" + empresa.id).then(() => {
 			toast({ title: "Empresa excluída com sucesso", action: <Check />, variant: "default" });
 			handleFetch();

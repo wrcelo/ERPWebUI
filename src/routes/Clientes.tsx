@@ -112,7 +112,7 @@ const Clientes = () => {
 						<Input
 							type="text"
 							placeholder="Buscar..."
-							onInput={() => console.log("teste")}
+							onInput={() => {}}
 						/>
 					</div>
 				</div>

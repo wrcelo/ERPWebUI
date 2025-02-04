@@ -38,15 +38,11 @@ export function DialogAddProduct({ open, onOpenChange }: DialogAddProductProps) 
 	});
 
 	function onSubmit(values: z.infer<typeof formSchema>) {
-		// Processar o envio do arquivo e os outros dados do formulário
 		const formData = new FormData();
 		formData.append("nome", values.nome);
 		formData.append("descricao", values.descricao);
 		formData.append("estoqueEmMetros", values.estoqueEmMetros.toString());
 		formData.append("imgFile", values.imgFile);
-
-		// Substitua por uma chamada à API para envio
-		console.log("Dados enviados:", formData);
 
 		onOpenChange(false);
 		form.reset();

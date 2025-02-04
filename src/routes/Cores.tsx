@@ -37,6 +37,7 @@ const Cores = () => {
 	const [descricaoCorEdit, setDescricaoCorEdit] = useState("");
 	const [todasCores, setTodasCores] = useState<Cor[]>([]);
 	const [openAdicionar, setOpenAdicionar] = useState<boolean>(false);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const handleCodigoCor = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setCodigoCor(e.target.value);
@@ -81,13 +82,16 @@ const Cores = () => {
 	};
 
 	const handleFetch = async () => {
+		setIsLoading(true);
 		try {
 			const { data } = await api.get("/v1/cores");
 			setCoresCadastradas(data.dados);
 			setTodasCores(data.dados);
 		} catch (error) {
-			toast({ title: "Erro ao carregar cores", action: <CircleAlert /> });
+			console.error("Erro ao carregar cores", error);
+			setIsLoading(false);
 		}
+		setIsLoading(false);
 	};
 
 	const handleSubmit = () => {
@@ -223,6 +227,7 @@ const Cores = () => {
 					</div>
 				</div>
 				<DataTableCores
+					isLoading={isLoading}
 					columns={ColumnsCores({
 						onEdit: handleEdit,
 						onDelete: handleDelete,

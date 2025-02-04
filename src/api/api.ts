@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const apiBaseUrl = import.meta.env.VITE_REACT_APP_API_URL || "https://default-url.com";
+const apiBaseUrl = import.meta.env.VITE_REACT_APP_API_URL;
 
 const apiIdentityUrl = import.meta.env.VITE_REACT_APP_API_IDENTITY_URL;
 

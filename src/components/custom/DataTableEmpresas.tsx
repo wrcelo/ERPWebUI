@@ -98,7 +98,6 @@ export function DataTableEmpresas<TValue>({ columns, data }: DataTableProps<Empr
 			<div className="flex flex-col gap-2 md:hidden">
 				{table.getRowModel().rows.map((item) => {
 					const empresa = item.original;
-					console.log(empresa);
 					return (
 						<Card
 							key={empresa.id}

@@ -94,7 +94,7 @@ createRoot(document.getElementById("root")!).render(
 	<StrictMode>
 		<ThemeProvider>
 			<Toaster />
-			<AuthProvider isSignedIn={true}>
+			<AuthProvider isSignedIn>
 				<RouterProvider router={router} />
 			</AuthProvider>
 		</ThemeProvider>
