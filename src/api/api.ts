@@ -3,10 +3,8 @@ import axios, { AxiosError } from "axios";
 const apiBaseUrl = import.meta.env.VITE_REACT_APP_API_URL;
 const apiIdentityUrl = import.meta.env.VITE_REACT_APP_API_IDENTITY_URL;
 
-// Criar uma instância utilizável globalmente para o manipulador de autenticação
 let authHandler: { setAuthenticated?: (value: boolean) => void } = {};
 
-// Função para definir o manipulador
 export const setAuthHandler = (handler: { setAuthenticated: (value: boolean) => void }) => {
 	authHandler = handler;
 };
@@ -15,6 +13,15 @@ const api = axios.create({
 	baseURL: apiBaseUrl,
 });
 
+const handleUnauthorized = () => {
+	if (authHandler.setAuthenticated) {
+		authHandler.setAuthenticated(false);
+	}
+	localStorage.removeItem("authToken");
+	window.location.href = "/login?expired=true";
+};
+
+// Interceptor de request para adicionar o token
 api.interceptors.request.use(
 	(config) => {
 		const token = localStorage.getItem("authToken");
@@ -23,59 +30,42 @@ api.interceptors.request.use(
 		}
 		return config;
 	},
-	(error) => {
-		return Promise.reject(error);
-	}
+	(error) => Promise.reject(error)
 );
 
+// Interceptor de response para tratar todos os status
 api.interceptors.response.use(
 	(response) => {
+		// Não precisa validar 401 aqui
 		return response;
 	},
 	(error: AxiosError) => {
-		// Verifica se é um erro de resposta HTTP com status code
+		// Aqui sim, porque o Axios já considera erro e entra aqui
 		if (error.response) {
 			const status = error.response.status;
-
-			// Log para depuração
 			console.error(`API Error: ${status}`, error.response.data);
 
-			// Tratamento específico para cada status code
-			switch (status) {
-				case 401: // Unauthorized
-					// Se receber um 401, atualiza o estado de autenticação
-					if (authHandler.setAuthenticated) {
-						authHandler.setAuthenticated(false);
-					}
-
-					// Remove o token
-					localStorage.removeItem("authToken");
-
-					// Redireciona para a página de login
-					window.location.href = "/login?expired=true";
-					break;
-
-				case 403: // Forbidden
-					console.error("Acesso proibido. Verifique as permissões do usuário.");
-					break;
-
-				case 404: // Not Found
-					console.error("Recurso não encontrado:", error.config?.url);
-					break;
-
-				case 422: // Unprocessable Entity
-					console.error("Dados inválidos:", error.response.data);
-					break;
-
-				case 500: // Internal Server Error
-					console.error("Erro interno no servidor:", error.response.data);
-					break;
-
-				default:
-					console.error(`Erro não tratado (${status}):`, error.response.data);
+			if (status === 401) {
+				handleUnauthorized();
+			} else {
+				switch (status) {
+					case 403:
+						console.error("Acesso proibido. Verifique as permissões do usuário.");
+						break;
+					case 404:
+						console.error("Recurso não encontrado:", error.config?.url);
+						break;
+					case 422:
+						console.error("Dados inválidos:", error.response.data);
+						break;
+					case 500:
+						console.error("Erro interno no servidor:", error.response.data);
+						break;
+					default:
+						console.error(`Erro não tratado (${status}):`, error.response.data);
+				}
 			}
 
-			// Adiciona informações do erro para uso no componente que fez a chamada
 			return Promise.reject({
 				status,
 				data: error.response.data,
@@ -84,17 +74,15 @@ api.interceptors.response.use(
 			});
 		}
 
-		// Erros de rede sem resposta do servidor
 		if (error.request) {
 			console.error("Erro de rede. Não foi possível conectar ao servidor.", error.request);
 			return Promise.reject({
-				status: 0, // Convenção para erros de rede
+				status: 0,
 				message: "Não foi possível conectar ao servidor. Verifique sua conexão com a internet.",
 				originalError: error,
 			});
 		}
 
-		// Outros erros (configuração, etc)
 		console.error("Erro ao configurar requisição:", error.message);
 		return Promise.reject({
 			message: error.message,
@@ -122,7 +110,6 @@ export const logout = async () => {
 	try {
 		localStorage.removeItem("authToken");
 
-		// Atualiza o estado de autenticação se disponível
 		if (authHandler.setAuthenticated) {
 			authHandler.setAuthenticated(false);
 		}

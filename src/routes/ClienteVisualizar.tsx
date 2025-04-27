@@ -105,7 +105,7 @@ const ClienteVisualizar = () => {
 	}
 
 	return (
-		<div className="container mx-auto py-6">
+		<div className="container py-6 max-w-[720px] mx-auto">
 			<div className="flex justify-between items-center mb-8">
 				<div className="flex items-center gap-2">
 					<Button
@@ -143,7 +143,7 @@ const ClienteVisualizar = () => {
 
 				{/* Informações principais */}
 				<div className="p-6">
-					<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+					<div className="grid grid-cols-1 md:grid-cols-1 gap-8">
 						{/* Coluna 1: Informações básicas */}
 						<div className="space-y-6">
 							<div>

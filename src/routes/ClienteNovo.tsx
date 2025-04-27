@@ -252,7 +252,7 @@ export default function ClienteNovo() {
 	};
 
 	return (
-		<div className="container mx-auto py-6">
+		<div className="container mx-auto py-6 max-w-[720px] ">
 			<div className="flex items-center mb-6">
 				<Button
 					variant="ghost"
