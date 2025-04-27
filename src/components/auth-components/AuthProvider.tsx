@@ -1,6 +1,6 @@
 import { createContext, PropsWithChildren, useContext, useState, useCallback } from "react";
 import { User } from "@/lib/types";
-import api, { login as apiLogin } from "@/api/api";
+import { login as apiLogin } from "@/api/api";
 
 // Interface para o contexto de autenticação
 interface AuthContextType {

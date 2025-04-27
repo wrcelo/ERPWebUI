@@ -75,6 +75,17 @@ export type Ramo = {
 	descricao: string;
 };
 
+export type ClienteJuridico = {
+	id: number;
+	cnpj: string;
+	inscricaoEstadual: string;
+	inscricaoMunicipal?: string;
+	nomeFantasia: string;
+	nomeContato: string;
+	dataNascimentoContato: string;
+	celularContato: string;
+};
+
 export type Cliente = {
 	id: number;
 	nome: string;
@@ -98,15 +109,15 @@ export type Cliente = {
 	dataCadastro: string;
 	consumidorFinal: string;
 	idTransportador: number | null;
-	transportador: string | null;
+	transportador: any | null;
 	idEnderecoEntrega: number;
 	enderecoEntrega: Endereco;
 	telefoneEntrega: string;
-	mesmoEnderecoEntrega: string | null;
+	mesmoEnderecoEntrega: string;
 	emailComercial: string | null;
 	emailFiscal: string | null;
 	emailFinanceiro: string | null;
 	idTransportadorRedespacho: number | null;
-	transportadorRedespacho: string | null;
-	clienteJuridico: string | null;
+	transportadorRedespacho: any | null;
+	clienteJuridico: ClienteJuridico | null;
 };

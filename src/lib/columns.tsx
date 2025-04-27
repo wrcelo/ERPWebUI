@@ -9,7 +9,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal } from "lucide-react";
+import { Edit, MoreHorizontal, Trash } from "lucide-react";
 import placeholderImagemEmpresa from "@/assets/placeholder.png";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
@@ -342,23 +342,18 @@ export function ColumnsBancos({ onEdit, onDelete }: ColumnsBancosProps) {
 
 	return columns;
 }
-export function ColumnsDepartamentos({ onEdit, onDelete }: ColumnsDepartamentosProps) {
+export const ColumnsDepartamentos = ({ onEdit, onDelete }: ColumnsDepartamentosProps) => {
 	const columns: ColumnDef<Departamento>[] = [
 		{
-			id: "nomeDepartamento",
+			id: "id",
+			accessorKey: "idDepartamento",
+			header: "ID",
+		},
+		{
+			id: "nome",
 			accessorKey: "nomeDepartamento",
 			header: "Nome",
 		},
-		{
-			id: "idDepartamento",
-			accessorKey: "idDepartamento",
-			header: "Identificador",
-			cell: ({ row }) => {
-				const departamento = row.original;
-				return <div className="text-foreground/40">{departamento.idDepartamento}</div>;
-			},
-		},
-
 		{
 			id: "actions",
 			cell: ({ row }) => {
@@ -370,21 +365,29 @@ export function ColumnsDepartamentos({ onEdit, onDelete }: ColumnsDepartamentosP
 								variant="ghost"
 								className="h-8 w-8 p-0"
 							>
-								<span className="sr-only">Abrir</span>
+								<span className="sr-only">Abrir menu</span>
 								<MoreHorizontal className="h-4 w-4" />
 							</Button>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent align="end">
-							<DropdownMenuLabel>{departamento.nomeDepartamento}</DropdownMenuLabel>
+							<DropdownMenuLabel>Ações</DropdownMenuLabel>
 							<DropdownMenuSeparator />
-							<DropdownMenuItem onClick={() => onEdit(departamento)}>Editar</DropdownMenuItem>
-							<DropdownMenuItem onClick={() => onDelete(departamento)}>Excluir</DropdownMenuItem>
+							<DropdownMenuItem onClick={() => onEdit(departamento)}>
+								<Edit className="h-4 w-4" />
+								Editar
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={() => onDelete(departamento)}
+								className="text-destructive focus:text-destructive"
+							>
+								<Trash className="h-4 w-4" />
+								Excluir
+							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
 				);
 			},
 		},
 	];
-
 	return columns;
-}
+};

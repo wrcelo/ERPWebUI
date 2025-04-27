@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import { createBrowserRouter, Navigate, RouterProvider, useNavigate } from "react-router-dom";
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import ErrorPage from "./error-page";
 import Root from "./routes/Root";
 import Vendas from "./routes/Vendas";
@@ -25,6 +25,7 @@ import Bancos from "./routes/Bancos";
 import Departamentos from "./routes/Departamentos";
 import ClienteNovo from "./routes/ClienteNovo";
 import ClienteEditar from "./routes/ClienteEditar";
+import ClienteVisualizar from "./routes/ClienteVisualizar";
 
 const router = createBrowserRouter([
 	{
@@ -101,6 +102,10 @@ const router = createBrowserRouter([
 				element: <ClienteEditar />,
 			},
 			{
+				path: "/clientes/visualizar/:id",
+				element: <ClienteVisualizar />,
+			},
+			{
 				path: "/clientes/editar",
 				element: (
 					<Navigate
@@ -115,12 +120,12 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById("root")!).render(
-	<StrictMode>
-		<ThemeProvider>
-			<Toaster richColors />
-			<AuthProvider>
-				<RouterProvider router={router} />
-			</AuthProvider>
-		</ThemeProvider>
-	</StrictMode>
+	// <StrictMode>
+	<ThemeProvider>
+		<Toaster richColors />
+		<AuthProvider>
+			<RouterProvider router={router} />
+		</AuthProvider>
+	</ThemeProvider>
+	// </StrictMode>
 );

@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Cliente, Ramo } from "@/lib/types";
 import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable, getFilteredRowModel } from "@tanstack/react-table";
-import { ChevronLeft, ChevronRight, Edit, Filter, MoreHorizontal, Plus, SearchIcon, Trash2, XCircle } from "lucide-react";
+import { ChevronLeft, ChevronRight, Edit, Eye, Filter, MoreHorizontal, Plus, SearchIcon, Trash2, XCircle } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "sonner";
@@ -200,17 +200,24 @@ const Clientes = () => {
 							<DropdownMenuLabel>{cliente.nome.toUpperCase()}</DropdownMenuLabel>
 							<DropdownMenuSeparator />
 							<DropdownMenuItem
+								onClick={() => navigate(`/clientes/visualizar/${cliente.id}`)}
+								className="cursor-pointer"
+							>
+								<Eye className="h-4 w-4 " />
+								Visualizar
+							</DropdownMenuItem>
+							<DropdownMenuItem
 								onClick={() => navigate(`/clientes/editar/${cliente.id}`)}
 								className="cursor-pointer"
 							>
-								<Edit className="h-4 w-4" />
+								<Edit className="h-4 w-4 " />
 								Editar
 							</DropdownMenuItem>
 							<DropdownMenuItem
 								onClick={() => openDeleteModal(cliente)}
 								className="cursor-pointer text-destructive focus:text-destructive"
 							>
-								<Trash2 className="h-4 w-4" />
+								<Trash2 className="h-4 w-4 " />
 								Excluir
 							</DropdownMenuItem>
 						</DropdownMenuContent>

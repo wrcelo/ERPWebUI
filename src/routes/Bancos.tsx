@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 import { toast } from "sonner";
-import { Check, CircleAlert, Plus } from "lucide-react";
+import { Check, CircleAlert, Plus, SearchIcon, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -17,6 +17,8 @@ const Bancos = () => {
 	}, []);
 
 	const [bancos, setBancos] = useState([]);
+	const [filteredBancos, setFilteredBancos] = useState([]);
+	const [searchQuery, setSearchQuery] = useState("");
 	const [nome, setNome] = useState("");
 	const [codigo, setCodigo] = useState("");
 	const [site, setSite] = useState("");
@@ -31,11 +33,32 @@ const Bancos = () => {
 		api
 			.get("/v1/bancos")
 			.then((data) => {
-				setBancos(data.data.dados);
+				const bancosData = data.data.dados;
+				setBancos(bancosData);
+				setFilteredBancos(bancosData);
 			})
 			.finally(() => {
 				setIsLoading(false);
 			});
+	};
+
+	// Função para filtrar bancos com base na query de busca
+	const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const query = e.target.value.toLowerCase();
+		setSearchQuery(query);
+
+		if (!query.trim()) {
+			setFilteredBancos(bancos);
+		} else {
+			const filtered = bancos.filter((banco: Banco) => banco.nomeBanco.toLowerCase().includes(query) || banco.codigoBanco.toLowerCase().includes(query));
+			setFilteredBancos(filtered);
+		}
+	};
+
+	// Limpar busca
+	const clearSearch = () => {
+		setSearchQuery("");
+		setFilteredBancos(bancos);
 	};
 
 	const handleEdit = (banco: Banco) => {
@@ -47,12 +70,13 @@ const Bancos = () => {
 		api
 			.put(`/v1/bancos/${banco.idBanco}`, putData)
 			.then(() => {
-				toast("Registro deletado com sucesso", { action: <Check /> });
+				toast("Registro atualizado com sucesso", { action: <Check /> });
 			})
 			.finally(() => {
 				handleFetch();
 			});
 	};
+
 	const handleDelete = (banco: Banco) => {
 		api
 			.delete(`/v1/bancos/${banco.idBanco}`)
@@ -63,6 +87,7 @@ const Bancos = () => {
 				handleFetch();
 			});
 	};
+
 	const handleSubmit = () => {
 		const postData = {
 			nomeBanco: nome,
@@ -83,17 +108,18 @@ const Bancos = () => {
 				handleFetch();
 			});
 	};
+
 	return (
 		<>
-			<div>
+			<div className="mb-6 flex items-center">
 				<Dialog
 					open={open}
 					onOpenChange={setOpen}
 				>
 					<DialogTrigger asChild>
-						<Button className="mb-6">
-							<Plus />
-							Adicionar banco
+						<Button className="gap-2">
+							<Plus className="h-4 w-4" />
+							<span className="hidden md:inline">Adicionar banco</span>
 						</Button>
 					</DialogTrigger>
 					<DialogContent>
@@ -136,15 +162,43 @@ const Bancos = () => {
 						</div>
 					</DialogContent>
 				</Dialog>
+
+				<div className="flex w-full max-w-sm items-center space-x-2 relative ">
+					<Input
+						type="text"
+						placeholder="Buscar banco..."
+						value={searchQuery}
+						onChange={handleSearch}
+						className="pl-8"
+					/>
+					<SearchIcon className="w-4 h-4 absolute left-1 text-muted-foreground" />
+					{searchQuery && (
+						<Button
+							variant="ghost"
+							className="h-8 w-8 p-0 absolute right-2"
+							onClick={clearSearch}
+						>
+							<XCircle className="h-4 w-4" />
+						</Button>
+					)}
+				</div>
 			</div>
+
 			<DataTableBancos
 				isLoading={isLoading}
 				columns={ColumnsBancos({
 					onEdit: handleEdit,
 					onDelete: handleDelete,
 				})}
-				data={bancos}
+				data={filteredBancos}
 			/>
+
+			{!isLoading && filteredBancos.length === 0 && (
+				<div className="flex flex-col items-center justify-center py-8 text-center">
+					<XCircle className="w-10 h-10 text-muted-foreground mb-2" />
+					<p className="text-muted-foreground">{searchQuery ? `Nenhum banco encontrado com "${searchQuery}"` : "Nenhum banco cadastrado"}</p>
+				</div>
+			)}
 		</>
 	);
 };
