@@ -4,15 +4,15 @@ import { ChevronLeft, ChevronRight, XCircle } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { useNavigate } from "react-router-dom";
-import { Produto } from "@/lib/types";
 import { Separator } from "../ui/separator";
+import { Departamento } from "@/lib/types";
 
-interface DataTableProps<Produto, TValue> {
-	columns: ColumnDef<Produto, TValue>[];
-	data: Produto[];
+interface DataTableProps<Departamento, TValue> {
+	columns: ColumnDef<Departamento, TValue>[];
+	data: Departamento[];
 }
 
-export function DataTableProdutos<TValue>({ columns, data }: DataTableProps<Produto, TValue>) {
+export function DataTableDepartamentos<TValue>({ columns, data }: DataTableProps<Departamento, TValue>) {
 	const table = useReactTable({
 		data,
 		columns,
@@ -20,7 +20,7 @@ export function DataTableProdutos<TValue>({ columns, data }: DataTableProps<Prod
 		getPaginationRowModel: getPaginationRowModel(),
 	});
 
-	const navigate = useNavigate();
+	// const navigate = useNavigate();
 	return (
 		<>
 			<div className="rounded hidden md:block">
@@ -93,61 +93,6 @@ export function DataTableProdutos<TValue>({ columns, data }: DataTableProps<Prod
 						<ChevronRight className="w-4 h-4" />
 					</Button>
 				</div>
-			</div>
-			<div className="grid grid-cols-2 gap-2 md:hidden">
-				{table.getRowModel().rows.map((item) => {
-					const produto = item.original;
-					return (
-						<Card
-							key={produto.id}
-							className="col-span-2 sm:col-span-1"
-							onClick={() => {
-								navigate("/produtos/" + produto.id);
-							}}
-						>
-							<CardHeader className="pb-3">
-								<div className="flex w-full justify-between items-center">
-									<div className="font-bold text-lg">{produto.nome || "Produto sem nome"}</div>
-									<div className="text-xs text-muted-foreground">ID: {produto.id}</div>
-								</div>
-							</CardHeader>
-							<CardContent>
-								{produto.imgUrl && (
-									<div className="mb-4 w-full flex gap-4">
-										<img
-											src={produto.imgUrl}
-											alt={produto.nome || "Imagem do produto"}
-											className="rounded-md object-cover aspect-square w-12"
-										/>
-										<p className="text-muted-foreground text-xs line-clamp-3">{produto.descricao || "Sem descrição disponível"}</p>
-									</div>
-								)}
-								<Separator className="my-4" />
-								{produto.cores && produto.cores.length > 0 && (
-									<div className="flex space-x-2">
-										{produto.cores.map((cor) => (
-											<div
-												key={cor.descricaoCor}
-												className="flex items-center space-x-1"
-											>
-												<div
-													className="w-3 h-3 rounded-full border"
-													style={{ backgroundColor: cor.hexadecimalCor }}
-												/>
-												<span className="text-xs text-muted-foreground">{cor.descricaoCor}</span>
-											</div>
-										))}
-									</div>
-								)}
-								<div className="flex justify-between items-center mt-4">
-									<span className="text-sm text-muted-foreground">Estoque</span>
-									<div className="border-b w-[calc(100%-125px)] h-1"></div>
-									<span className="text-lg text-muted-foreground">{produto.estoqueEmMetros}m</span>
-								</div>
-							</CardContent>
-						</Card>
-					);
-				})}
 			</div>
 		</>
 	);

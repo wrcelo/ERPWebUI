@@ -3,15 +3,16 @@ import { ColumnDef, getCoreRowModel, useReactTable, getPaginationRowModel, flexR
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useNavigate } from "react-router-dom";
 import { Separator } from "@radix-ui/react-separator";
-import { XCircle, ChevronLeft, ChevronRight } from "lucide-react";
+import { XCircle, ChevronLeft, ChevronRight, Loader } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card, CardHeader, CardContent } from "../ui/card";
 
 interface DataTableProps<Cor, TValue> {
 	columns: ColumnDef<Cor, TValue>[];
 	data: Cor[];
+	isLoading: boolean;
 }
-export function DataTableCores<TValue>({ columns, data }: DataTableProps<Cor, TValue>) {
+export function DataTableCores<TValue>({ columns, data, isLoading }: DataTableProps<Cor, TValue>) {
 	const table = useReactTable({
 		data,
 		columns,
@@ -66,8 +67,17 @@ export function DataTableCores<TValue>({ columns, data }: DataTableProps<Cor, TV
 									className="h-24 text-center"
 								>
 									<div className="flex gap-2 justify-center items-center font-semibold text-muted-foreground text-xs">
-										<XCircle className="w-3 h-3" />
-										Não foi encontrado nenhum dado
+										{isLoading ? (
+											<div className="flex items-center gap-2">
+												<XCircle className="w-3 h-3" />
+												Não foi encontrado nenhum dado
+											</div>
+										) : (
+											<div className="flex items-center gap-2">
+												<Loader className="w-3 h-3 animate-spin" />
+												Carregando
+											</div>
+										)}
 									</div>
 								</TableCell>
 							</TableRow>
@@ -98,6 +108,7 @@ export function DataTableCores<TValue>({ columns, data }: DataTableProps<Cor, TV
 					const cor = item.original;
 					return (
 						<Card
+							key={cor.idCor}
 							className="col-span-2 sm:col-span-1"
 							onClick={() => {
 								navigate("/cores/" + cor.idCor);

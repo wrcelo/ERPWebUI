@@ -2,14 +2,14 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { ColumnsEmpresas } from "@/lib/columns";
 import { Empresa } from "@/lib/types";
-import { Building2, Check, CircleAlert, FileIcon, ListFilter, LoaderCircle, Plus, Unplug } from "lucide-react";
+import { Building2, Check, CircleAlert, Plus, Unplug } from "lucide-react";
 import { SetStateAction, useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import api from "@/api/api";
 import { DataTableEmpresas } from "@/components/custom/DataTableEmpresas";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
@@ -66,8 +66,6 @@ const Empresas = () => {
 	});
 
 	function onSubmit(data: z.infer<typeof FormSchema>) {
-		console.log(file);
-
 		const formData = new FormData();
 
 		formData.append("nome", data.nome);
@@ -98,15 +96,13 @@ const Empresas = () => {
 				},
 			})
 			.then(() => {
-				toast({ title: "Empresa cadastrada com sucesso", action: <Check />, variant: "default" });
+				toast("Empresa cadastrada com sucesso", { action: <Check /> });
 				handleFetch();
 				setIsAddOpen(false);
 			})
 			.catch(() => {
-				toast({
-					title: "Falha ao cadastrar",
+				toast.error("Falha ao cadastrar", {
 					description: "Houve um erro ao cadastrar uma empresa",
-					variant: "destructive",
 					action: <Unplug />,
 				});
 			});
@@ -140,14 +136,13 @@ const Empresas = () => {
 		api
 			.put("api/filial/v1/editar", formData)
 			.then(() => {
-				toast({ title: "Empresa atualizada", description: `${formData.get("nome")} atualizado com sucesso!`, action: <Check /> });
+				toast("Empresa atualizada", { description: `${formData.get("nome")} atualizado com sucesso!`, action: <Check /> });
 				handleFetch();
 			})
 			.catch(() => {
-				toast({
-					title: "Falha ao editar",
+				toast.error("Falha ao editar", {
 					description: "Houve um erro ao editar a empresa.",
-					variant: "destructive",
+
 					action: <Unplug />,
 				});
 			});
@@ -173,7 +168,7 @@ const Empresas = () => {
 			.catch((data) => {
 				if (data.status == 403) {
 					setData([]);
-					toast({ title: "Você não possui permissão para visualizar as empresas", action: <CircleAlert />, variant: "default" });
+					toast("Você não possui permissão para visualizar as empresas", { action: <CircleAlert /> });
 				}
 			});
 	};
@@ -207,9 +202,8 @@ const Empresas = () => {
 	};
 
 	const handleDelete = (empresa: Empresa) => {
-		console.log(empresa);
 		api.delete("/api/filial/v1/excluir/id/" + empresa.id).then(() => {
-			toast({ title: "Empresa excluída com sucesso", action: <Check />, variant: "default" });
+			toast("Empresa excluída com sucesso", { action: <Check /> });
 			handleFetch();
 		});
 	};
@@ -590,7 +584,7 @@ const Empresas = () => {
 									<FormField
 										control={form.control}
 										name="imgUrl"
-										render={({ field }) => (
+										render={() => (
 											<FormItem className="col-span-8">
 												<FormLabel>Imagem</FormLabel>
 												<FormControl>
