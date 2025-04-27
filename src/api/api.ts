@@ -1,8 +1,15 @@
 import axios from "axios";
 
 const apiBaseUrl = import.meta.env.VITE_REACT_APP_API_URL;
-
 const apiIdentityUrl = import.meta.env.VITE_REACT_APP_API_IDENTITY_URL;
+
+// Criar uma instância utilizável globalmente para o manipulador de autenticação
+let authHandler: { setAuthenticated?: (value: boolean) => void } = {};
+
+// Função para definir o manipulador
+export const setAuthHandler = (handler: { setAuthenticated: (value: boolean) => void }) => {
+	authHandler = handler;
+};
 
 const api = axios.create({
 	baseURL: apiBaseUrl,
@@ -14,7 +21,6 @@ api.interceptors.request.use(
 		if (token) {
 			config.headers.Authorization = `Bearer ${token}`;
 		}
-
 		return config;
 	},
 	(error) => {
@@ -28,8 +34,16 @@ api.interceptors.response.use(
 	},
 	(error) => {
 		if (error.response && error.response.status === 401) {
-			window.location.href = "/login?expired=true";
+			// Se receber um 401, atualiza o estado de autenticação
+			if (authHandler.setAuthenticated) {
+				authHandler.setAuthenticated(false);
+			}
+
+			// Remove o token
 			localStorage.removeItem("authToken");
+
+			// Redireciona para a página de login
+			window.location.href = "/login?expired=true";
 		}
 		return Promise.reject(error);
 	}
@@ -52,12 +66,14 @@ export const login = async ({ email, password }: { email: string; password: stri
 
 export const logout = async () => {
 	try {
-		// const data = await axios.post(apiIdentityUrl + "logout");
-
-		// if (data.status === 200) {
 		localStorage.removeItem("authToken");
+
+		// Atualiza o estado de autenticação se disponível
+		if (authHandler.setAuthenticated) {
+			authHandler.setAuthenticated(false);
+		}
+
 		window.location.href = "/login";
-		// }
 	} catch (error) {}
 };
 

@@ -1,4 +1,4 @@
-import { createContext, PropsWithChildren, useContext, useState, useEffect, useCallback } from "react";
+import { createContext, PropsWithChildren, useContext, useState, useCallback } from "react";
 import { User } from "@/lib/types";
 import api, { login as apiLogin } from "@/api/api";
 
@@ -8,16 +8,16 @@ interface AuthContextType {
 	isLoading: boolean;
 	isAuthenticated: boolean;
 	login: (email: string, password: string) => Promise<boolean>;
-	checkAuth: () => Promise<boolean>;
+	setAuthenticated: (value: boolean) => void;
 }
 
 // Valor padrão
 const defaultAuthContext: AuthContextType = {
 	user: null,
-	isLoading: true,
+	isLoading: false,
 	isAuthenticated: false,
 	login: async () => false,
-	checkAuth: async () => false,
+	setAuthenticated: () => {},
 };
 
 const AuthContext = createContext<AuthContextType>(defaultAuthContext);
@@ -25,77 +25,42 @@ const AuthContext = createContext<AuthContextType>(defaultAuthContext);
 type AuthProviderProps = PropsWithChildren;
 
 export default function AuthProvider({ children }: AuthProviderProps) {
+	// Verificar se já existe um token no localStorage
+	const hasToken = localStorage.getItem("authToken") !== null;
+
 	const [user, setUser] = useState<User | null>(null);
-	const [isLoading, setIsLoading] = useState<boolean>(true);
-	const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+	// Inicialmente, consideramos autenticado se houver um token
+	const [isAuthenticated, setIsAuthenticated] = useState<boolean>(hasToken);
 
-	// Verificar autenticação (extraído para um método reutilizável)
-	const checkAuth = useCallback(async (): Promise<boolean> => {
-		setIsLoading(true);
-
-		try {
-			const token = localStorage.getItem("authToken");
-
-			if (!token) {
-				setUser(null);
-				setIsAuthenticated(false);
-				setIsLoading(false);
-				return false;
-			}
-
-			// Tenta fazer uma requisição para validar o token
-			const response = await api.get("/v1/clientes");
-
-			if (response.status === 200) {
-				// Usuário autenticado
-				setUser({
-					id: response.data.id,
-					// Outros dados do usuário conforme necessário
-				});
-				setIsAuthenticated(true);
-				setIsLoading(false);
-				return true;
-			} else {
-				// Token inválido
-				localStorage.removeItem("authToken");
-				setUser(null);
-				setIsAuthenticated(false);
-				setIsLoading(false);
-				return false;
-			}
-		} catch (error) {
-			// Erro na requisição (token inválido ou expirado)
-			console.error("Erro ao validar autenticação:", error);
-			localStorage.removeItem("authToken");
-			setUser(null);
-			setIsAuthenticated(false);
-			setIsLoading(false);
-			return false;
-		}
+	// Função para definir o estado de autenticação
+	const setAuthenticated = useCallback((value: boolean) => {
+		setIsAuthenticated(value);
 	}, []);
 
-	// Função de login que garante a atualização do estado
+	// Função de login simplificada
 	const login = async (email: string, password: string): Promise<boolean> => {
+		setIsLoading(true);
+
 		try {
 			const result = await apiLogin({ email, password });
 
 			if (result) {
-				// Login bem-sucedido, atualize o estado imediatamente
-				const authSuccess = await checkAuth();
-				return authSuccess;
+				// Login bem-sucedido
+				setIsAuthenticated(true);
+				setUser({ id: 1 }); // Podemos definir um usuário padrão aqui
+				setIsLoading(false);
+				return true;
 			}
 
+			setIsLoading(false);
 			return false;
 		} catch (error) {
 			console.error("Erro durante login:", error);
+			setIsLoading(false);
 			return false;
 		}
 	};
-
-	// Verificar autenticação ao inicializar
-	useEffect(() => {
-		checkAuth();
-	}, [checkAuth]);
 
 	// Valor a ser fornecido pelo contexto
 	const contextValue: AuthContextType = {
@@ -103,7 +68,7 @@ export default function AuthProvider({ children }: AuthProviderProps) {
 		isLoading,
 		isAuthenticated,
 		login,
-		checkAuth,
+		setAuthenticated,
 	};
 
 	return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
