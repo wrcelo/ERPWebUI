@@ -69,11 +69,11 @@ const Departamentos = () => {
 
 		api
 			.put(`/v1/departamentos/${departamentoEdit.idDepartamento}`, putData)
-			.then((res) => {
+			.then(() => {
 				toast.success("Departamento atualizado com sucesso!");
 				setIsEditOpen(false);
 			})
-			.catch((error) => {
+			.catch(() => {
 				toast.error("Ocorreu um erro!", {
 					description: "Falha ao atualizar departamento",
 					action: <Plug />,
@@ -98,7 +98,7 @@ const Departamentos = () => {
 
 		api
 			.delete(`/v1/departamentos/${departamentoDelete.idDepartamento}`)
-			.then((res) => {
+			.then(() => {
 				toast.success("Departamento excluído com sucesso!");
 			})
 			.catch(() => {
