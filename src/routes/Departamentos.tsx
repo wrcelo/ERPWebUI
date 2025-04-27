@@ -251,16 +251,6 @@ const Departamentos = () => {
 					})}
 					data={filteredDepartamentos}
 				/>
-
-				{/* Mensagem para quando não houver resultados */}
-				{filteredDepartamentos.length === 0 && (
-					<>
-						<div className="flex flex-col items-center justify-center py-8 text-center">
-							<XCircle className="w-10 h-10 text-muted-foreground mb-2" />
-							<p className="text-muted-foreground">{searchQuery ? `Nenhum departamento encontrado com "${searchQuery}"` : "Nenhum departamento cadastrado"}</p>
-						</div>
-					</>
-				)}
 			</div>
 		</>
 	);
