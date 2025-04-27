@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { Banco, Cor, Cores, Empresa, Produto } from "@/lib/types";
+import { Banco, Cor, Cores, Departamento, Empresa, Produto } from "@/lib/types";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -28,8 +28,13 @@ interface ColumnsCoresProps {
 }
 
 interface ColumnsBancosProps {
-	onEdit: (cor: Banco) => void;
-	onDelete: (cor: Banco) => void;
+	onEdit: (banco: Banco) => void;
+	onDelete: (banco: Banco) => void;
+}
+
+interface ColumnsDepartamentosProps {
+	onEdit: (departamento: Departamento) => void;
+	onDelete: (departamento: Departamento) => void;
 }
 
 // export function ColumnsEmpresas({ onEdit, onDelete }: ColumnsEmpresasProps) {
@@ -145,7 +150,6 @@ export function ColumnsEmpresas({ onEdit, onDelete }: ColumnsEmpresasProps) {
 
 	return columns;
 }
-
 export function ColumnsProdutos({ onEdit, onDelete }: ColumnsProdutosProps) {
 	const columns: ColumnDef<Produto>[] = [
 		{
@@ -228,7 +232,6 @@ export function ColumnsProdutos({ onEdit, onDelete }: ColumnsProdutosProps) {
 
 	return columns;
 }
-
 export function ColumnsCores({ onEdit, onDelete }: ColumnsCoresProps) {
 	const columns: ColumnDef<Cor>[] = [
 		{
@@ -280,7 +283,6 @@ export function ColumnsCores({ onEdit, onDelete }: ColumnsCoresProps) {
 
 	return columns;
 }
-
 export function ColumnsBancos({ onEdit, onDelete }: ColumnsBancosProps) {
 	const columns: ColumnDef<Banco>[] = [
 		{
@@ -299,7 +301,15 @@ export function ColumnsBancos({ onEdit, onDelete }: ColumnsBancosProps) {
 			header: "Site",
 			cell: ({ row }) => {
 				const banco = row.original;
-				return <>{banco.siteBanco || <div className="text-muted-foreground/40">Sem descrição</div>}</>;
+				return (
+					<a
+						href={banco.siteBanco}
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						{banco.siteBanco || <div className="text-muted-foreground/40">-</div>}
+					</a>
+				);
 			},
 		},
 
@@ -323,6 +333,52 @@ export function ColumnsBancos({ onEdit, onDelete }: ColumnsBancosProps) {
 							<DropdownMenuSeparator />
 							<DropdownMenuItem onClick={() => onEdit(banco)}>Editar</DropdownMenuItem>
 							<DropdownMenuItem onClick={() => onDelete(banco)}>Excluir</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
+				);
+			},
+		},
+	];
+
+	return columns;
+}
+export function ColumnsDepartamentos({ onEdit, onDelete }: ColumnsDepartamentosProps) {
+	const columns: ColumnDef<Departamento>[] = [
+		{
+			id: "nomeDepartamento",
+			accessorKey: "nomeDepartamento",
+			header: "Nome",
+		},
+		{
+			id: "idDepartamento",
+			accessorKey: "idDepartamento",
+			header: "Identificador",
+			cell: ({ row }) => {
+				const departamento = row.original;
+				return <div className="text-foreground/40">{departamento.idDepartamento}</div>;
+			},
+		},
+
+		{
+			id: "actions",
+			cell: ({ row }) => {
+				const departamento = row.original;
+				return (
+					<DropdownMenu>
+						<DropdownMenuTrigger asChild>
+							<Button
+								variant="ghost"
+								className="h-8 w-8 p-0"
+							>
+								<span className="sr-only">Abrir</span>
+								<MoreHorizontal className="h-4 w-4" />
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent align="end">
+							<DropdownMenuLabel>{departamento.nomeDepartamento}</DropdownMenuLabel>
+							<DropdownMenuSeparator />
+							<DropdownMenuItem onClick={() => onEdit(departamento)}>Editar</DropdownMenuItem>
+							<DropdownMenuItem onClick={() => onDelete(departamento)}>Excluir</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>
 				);

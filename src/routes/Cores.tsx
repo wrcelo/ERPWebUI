@@ -2,9 +2,9 @@ import api from "@/api/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { Cor } from "@/lib/types";
-import { Check, CircleAlert, PaintBucket, Plus } from "lucide-react";
+import { Check, PaintBucket, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ColumnsCores } from "@/lib/columns";
@@ -103,7 +103,7 @@ const Cores = () => {
 		api
 			.post("/v1/cores", postData)
 			.then((data) => {
-				toast({ title: data.data.mensagem, action: <Check /> });
+				toast(data.data.mensagem, { action: <Check /> });
 				handleFetch();
 			})
 			.finally(() => {
@@ -120,10 +120,10 @@ const Cores = () => {
 		api
 			.put(`/v1/cores/${idCorEdit}`, putData)
 			.then((data) => {
-				toast({ title: data.data.mensagem, action: <Check /> });
+				toast(data.data.mensagem, { action: <Check /> });
 			})
 			.catch((data) => {
-				toast({ title: data.data.mensagem, action: <Check /> });
+				toast.error(data.data.mensagem, { action: <Check /> });
 			})
 			.finally(() => {
 				setOpenEdit(false);
@@ -148,10 +148,10 @@ const Cores = () => {
 		api
 			.delete(`/v1/cores/${idCorEdit}`)
 			.then((data) => {
-				toast({ title: data.data.mensagem, action: <Check /> });
+				toast(data.data.mensagem, { action: <Check /> });
 			})
 			.catch((data) => {
-				toast({ title: data.data.mensagem, action: <Check /> });
+				toast(data.data.mensagem, { action: <Check /> });
 			})
 			.finally(() => {
 				handleFetch();

@@ -1,4 +1,4 @@
-import { Bell, LogOut, Settings } from "lucide-react";
+import { LogOut, Settings } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -14,7 +14,6 @@ import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/c
 import { CaretSortIcon } from "@radix-ui/react-icons";
 import { logout } from "@/api/api";
 import { useNavigate } from "react-router-dom";
-import { prependOnceListener } from "process";
 
 export function NavUser({
 	user,

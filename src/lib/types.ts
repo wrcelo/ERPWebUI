@@ -37,14 +37,6 @@ export type Produto = {
 	estoqueEmMetros: number;
 };
 
-export type Cliente = {
-	id: string;
-	nome?: string;
-	imgUrl?: string;
-	descricao?: string;
-	cidade?: string;
-};
-
 export type User = {
 	id: number;
 };
@@ -61,4 +53,60 @@ export type Banco = {
 	nomeBanco: string;
 	codigoBanco: string;
 	siteBanco: string;
+};
+
+export type Departamento = {
+	idDepartamento: string;
+	nomeDepartamento: string;
+};
+
+export type Endereco = {
+	estado: string | null;
+	cidade: string | null;
+	bairro: string | null;
+	logradouro: string;
+	numero: string;
+	complemento: string;
+	cep: string;
+};
+
+export type Ramo = {
+	id: number;
+	descricao: string;
+};
+
+export type Cliente = {
+	id: number;
+	nome: string;
+	idRamo: number;
+	ramo: Ramo;
+	telefone: string;
+	email: string;
+	site: string;
+	bloqueado: string;
+	idMotivoBloqueio: number | null;
+	motivoBloqueio: string | null;
+	dataBloqueio: string;
+	idEndereco: number;
+	endereco: Endereco;
+	mesmoEndereco: string;
+	idEnderecoCobranca: number;
+	enderecoCobranca: Endereco;
+	telefoneCobranca: string;
+	observacao: string;
+	limiteCredito: number | null;
+	dataCadastro: string;
+	consumidorFinal: string;
+	idTransportador: number | null;
+	transportador: string | null;
+	idEnderecoEntrega: number;
+	enderecoEntrega: Endereco;
+	telefoneEntrega: string;
+	mesmoEnderecoEntrega: string | null;
+	emailComercial: string | null;
+	emailFiscal: string | null;
+	emailFinanceiro: string | null;
+	idTransportadorRedespacho: number | null;
+	transportadorRedespacho: string | null;
+	clienteJuridico: string | null;
 };

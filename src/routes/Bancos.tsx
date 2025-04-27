@@ -4,7 +4,7 @@ import { ColumnsBancos } from "@/lib/columns";
 import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { Check, CircleAlert, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -20,9 +20,9 @@ const Bancos = () => {
 	const [nome, setNome] = useState("");
 	const [codigo, setCodigo] = useState("");
 	const [site, setSite] = useState("");
-	const [nomeEdit, setNomeEdit] = useState("");
-	const [codigoEdit, setCodigoEdit] = useState("");
-	const [siteEdit, setSiteEdit] = useState("");
+	const [nomeEdit] = useState("");
+	const [codigoEdit] = useState("");
+	const [siteEdit] = useState("");
 	const [open, setOpen] = useState<boolean>(false);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -47,7 +47,7 @@ const Bancos = () => {
 		api
 			.put(`/v1/bancos/${banco.idBanco}`, putData)
 			.then(() => {
-				toast({ title: "Registro deletado com sucesso", action: <Check /> });
+				toast("Registro deletado com sucesso", { action: <Check /> });
 			})
 			.finally(() => {
 				handleFetch();
@@ -57,7 +57,7 @@ const Bancos = () => {
 		api
 			.delete(`/v1/bancos/${banco.idBanco}`)
 			.then(() => {
-				toast({ title: "Registro deletado com sucesso", action: <Check /> });
+				toast("Registro deletado com sucesso", { action: <Check /> });
 			})
 			.finally(() => {
 				handleFetch();
@@ -73,10 +73,10 @@ const Bancos = () => {
 		api
 			.post("/v1/bancos", postData)
 			.then((data) => {
-				toast({ title: data.data.mensagem, action: <Check /> });
+				toast(data.data.mensagem, { action: <Check /> });
 			})
 			.catch((data) => {
-				toast({ title: data.response.data.mensagem ?? "Erro ao cadastrar banco", action: <CircleAlert /> });
+				toast.error(data.response.data.mensagem ?? "Erro ao cadastrar banco", { action: <CircleAlert /> });
 			})
 			.finally(() => {
 				setOpen(false);

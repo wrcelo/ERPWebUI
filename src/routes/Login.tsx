@@ -1,16 +1,14 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { CircleSlash, LoaderCircle } from "lucide-react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage, Form } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { toast } from "@/hooks/use-toast";
-import { login } from "@/api/api";
-import { Separator } from "@/components/ui/separator";
+import { toast } from "sonner";
+import { useAuth } from "@/components/auth-components/AuthProvider";
 
 const formSchema = z.object({
 	email: z.string().email({
@@ -22,20 +20,24 @@ const formSchema = z.object({
 });
 
 const Login = () => {
-	const [params] = useSearchParams();
+	const [params, setParams] = useSearchParams();
 	const navigate = useNavigate();
 	const [isLoading, setIsLoading] = useState(false);
+	const toastShownRef = useRef(false);
+	const { login } = useAuth();
 
 	useEffect(() => {
-		if (params.get("expired")) {
-			toast({
-				title: "Seu login expirou!",
+		if (params.get("expired") && !toastShownRef.current) {
+			toast.error("Seu login expirou!", {
 				description: "Você foi redirecionado para a página de login",
-				variant: "destructive",
 				action: <CircleSlash />,
 			});
+			toastShownRef.current = true;
+
+			// Remover o parâmetro expired da URL
+			setParams({}, { replace: true });
 		}
-	}, [params]);
+	}, [params, setParams]);
 
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
@@ -47,15 +49,29 @@ const Login = () => {
 
 	async function onSubmit(values: z.infer<typeof formSchema>) {
 		setIsLoading(true);
-		login(values).then((response) => {
-			if (response) {
-				navigate("/");
-				setIsLoading(false);
+
+		try {
+			// Usar a função login do AuthProvider
+			const success = await login(values.email, values.password);
+
+			if (success) {
+				// Se login for bem-sucedido, navegue para a página inicial
+				navigate("/", { replace: true });
 			} else {
-				setIsLoading(false);
-				toast({ title: "Erro ao realizar login", description: "Usuário e/ou senha inválido", action: <CircleSlash />, variant: "destructive" });
+				toast("Erro ao realizar login", {
+					description: "Usuário e/ou senha inválido",
+					action: <CircleSlash />,
+				});
 			}
-		});
+		} catch (error) {
+			console.error("Erro durante login:", error);
+			toast("Erro ao realizar login", {
+				description: "Ocorreu um erro inesperado",
+				action: <CircleSlash />,
+			});
+		} finally {
+			setIsLoading(false);
+		}
 	}
 
 	return (
