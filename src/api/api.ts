@@ -36,12 +36,11 @@ api.interceptors.request.use(
 // Interceptor de response para tratar todos os status
 api.interceptors.response.use(
 	(response) => {
-		// Não precisa validar 401 aqui
 		return response;
 	},
 	(error: AxiosError) => {
-		// Aqui sim, porque o Axios já considera erro e entra aqui
 		if (error.response) {
+			debugger;
 			const status = error.response.status;
 			console.error(`API Error: ${status}`, error.response.data);
 
