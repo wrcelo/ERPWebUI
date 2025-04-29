@@ -26,6 +26,7 @@ import Departamentos from "./routes/Departamentos";
 import ClienteNovo from "./routes/ClienteNovo";
 import ClienteEditar from "./routes/ClienteEditar";
 import ClienteVisualizar from "./routes/ClienteVisualizar";
+import Usuarios from "./routes/Usuarios";
 
 const router = createBrowserRouter([
 	{
@@ -113,6 +114,10 @@ const router = createBrowserRouter([
 						replace
 					/>
 				),
+			},
+			{
+				path: "/usuarios/",
+				element: <Usuarios />,
 			},
 		],
 	},

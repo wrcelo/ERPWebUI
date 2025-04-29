@@ -40,7 +40,6 @@ api.interceptors.response.use(
 	},
 	(error: AxiosError) => {
 		if (error.response) {
-			debugger;
 			const status = error.response.status;
 			console.error(`API Error: ${status}`, error.response.data);
 

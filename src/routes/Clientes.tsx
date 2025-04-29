@@ -1,5 +1,9 @@
+import { useState, useEffect } from "react";
 import api from "@/api/api";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -8,28 +12,16 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Cliente, Ramo } from "@/lib/types";
-import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable, getFilteredRowModel } from "@tanstack/react-table";
-import { ChevronLeft, ChevronRight, Edit, Eye, Filter, MoreHorizontal, Plus, SearchIcon, Trash2, XCircle } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { toast } from "sonner";
-import { Checkbox } from "@/components/ui/checkbox";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import {
-	AlertDialog,
-	AlertDialogAction,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogFooter,
-	AlertDialogHeader,
-	AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
+import { AlertCircle, ChevronDown, Edit, Eye, Filter, PlusCircle, Search, Trash2, XCircle } from "lucide-react";
+import { toast } from "sonner";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Cliente, Ramo } from "@/lib/types";
 
 // Função auxiliar para formatar telefones
 const formatarTelefone = (telefone: string | null | undefined): string => {
@@ -61,490 +53,268 @@ const Clientes = () => {
 	const navigate = useNavigate();
 	const location = useLocation();
 	const [dadosClientes, setDadosClientes] = useState<Cliente[]>([]);
-	const [globalFilter, setGlobalFilter] = useState("");
-	const [ramosFilter, setRamosFilter] = useState<string[]>([]);
+	const [isLoading, setIsLoading] = useState(true);
+	const [searchTerm, setSearchTerm] = useState("");
 	const [ramos, setRamos] = useState<Ramo[]>([]);
+	const [ramoFilter, setRamoFilter] = useState<string>("todos");
 	const [showFilterModal, setShowFilterModal] = useState(false);
-	const [tempRamosFilter, setTempRamosFilter] = useState<string[]>([]);
-
-	// Estado para controlar o modal de exclusão
-	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-	const [clienteToDelete, setClienteToDelete] = useState<Cliente | null>(null);
-	const [isDeleting, setIsDeleting] = useState(false);
+	const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; cliente: Cliente | null }>({
+		open: false,
+		cliente: null,
+	});
 
 	useEffect(() => {
-		handleFetch();
+		fetchClientes();
 		fetchRamos();
 
 		// Exibe mensagem de sucesso ao retornar da página de cadastro
 		if (location.state?.success) {
-			toast("Sucesso!", {
-				description: location.state.message,
-			});
+			toast.success(location.state.message);
 
 			// Limpa o state para não mostrar o toast novamente em atualizações
 			navigate(location.pathname, { replace: true });
 		}
 	}, [location.state, navigate]);
 
-	// Quando o modal é aberto, inicializa tempRamosFilter com o valor atual de ramosFilter
-	useEffect(() => {
-		if (showFilterModal) {
-			setTempRamosFilter([...ramosFilter]);
-		}
-	}, [showFilterModal, ramosFilter]);
-
-	const openDeleteModal = (cliente: Cliente) => {
-		setClienteToDelete(cliente);
-		setIsDeleteModalOpen(true);
-	};
-	const handleDeleteCliente = async () => {
-		if (!clienteToDelete) return;
-
+	const fetchClientes = async () => {
+		setIsLoading(true);
 		try {
-			setIsDeleting(true);
-			await api.delete(`/v1/clientes/${clienteToDelete.id}`);
+			const response = await api.get("/v1/clientes");
+			setDadosClientes(response.data);
+		} catch (error) {
+			console.error("Erro ao carregar clientes:", error);
+			toast.error("Erro ao carregar clientes");
+		} finally {
+			setIsLoading(false);
+		}
+	};
 
-			// Remover o cliente da lista local sem precisar fazer nova requisição
-			setDadosClientes((prevClientes) => prevClientes.filter((c) => c.id !== clienteToDelete.id));
+	const fetchRamos = async () => {
+		try {
+			const response = await api.get("/v1/ramos");
+			setRamos(response.data);
+		} catch (error) {
+			console.error("Erro ao carregar ramos:", error);
+			toast.error("Erro ao carregar ramos");
+		}
+	};
 
-			toast("Sucesso!", {
-				description: `Cliente ${clienteToDelete.nome} excluído com sucesso!`,
-			});
+	// Função para excluir um cliente
+	const excluirCliente = async (id: number) => {
+		try {
+			await api.delete(`/v1/clientes/${id}`);
+
+			// Atualiza a lista de clientes
+			setDadosClientes((prevClientes) => prevClientes.filter((cliente) => cliente.id !== id));
+
+			toast.success("Cliente excluído com sucesso!");
+			setDeleteDialog({ open: false, cliente: null });
 		} catch (error) {
 			console.error("Erro ao excluir cliente:", error);
-			toast("Erro", {
-				description: "Não foi possível excluir o cliente",
-			});
-		} finally {
-			setIsDeleting(false);
-			setIsDeleteModalOpen(false);
-			setClienteToDelete(null);
+			toast.error("Não foi possível excluir o cliente");
 		}
 	};
 
-	const handleFetch = () => {
-		api.get("/v1/clientes").then((res) => {
-			setDadosClientes(res.data);
-		});
-	};
+	// Filtrar clientes com base na pesquisa e no filtro de ramo
+	const clientesFiltrados = dadosClientes.filter((cliente) => {
+		const matchesSearch =
+			cliente.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			(cliente.ramo?.descricao || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+			(cliente.telefone || "").includes(searchTerm);
 
-	const fetchRamos = () => {
-		api
-			.get("/v1/ramos")
-			.then((res) => {
-				setRamos(res.data);
-			})
-			.catch((error) => {
-				console.error("Erro ao carregar ramos:", error);
-			});
-	};
+		const matchesRamo = ramoFilter === "todos" || (cliente.idRamo && cliente.idRamo.toString() === ramoFilter);
 
-	// Filtra clientes por múltiplos ramos
-	const filteredData = useMemo(() => {
-		if (!ramosFilter.length) {
-			return dadosClientes;
-		}
-		return dadosClientes.filter((cliente) => cliente.idRamo && ramosFilter.includes(cliente.idRamo.toString()));
-	}, [dadosClientes, ramosFilter]);
-
-	const columns: ColumnDef<Cliente>[] = [
-		{
-			id: "id",
-			accessorKey: "id",
-			header: "ID",
-		},
-		{
-			id: "nome",
-			accessorKey: "nome",
-			header: "Nome",
-			cell({ row }) {
-				const cliente = row.original;
-				return <span>{cliente.nome.toUpperCase()}</span>;
-			},
-		},
-		{
-			id: "telefone",
-			accessorKey: "telefone",
-			header: "Telefone",
-			cell({ row }) {
-				const cliente = row.original;
-				return <span>{formatarTelefone(cliente.telefone)}</span>;
-			},
-		},
-		{
-			id: "ramo",
-			accessorKey: "ramo",
-			header: "Ramo",
-			cell({ row }) {
-				const cliente = row.original;
-				return <span>{cliente.ramo?.descricao || "-"}</span>;
-			},
-		},
-		{
-			id: "actions",
-			cell: ({ row }) => {
-				const cliente = row.original;
-				return (
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<Button
-								variant="ghost"
-								className="h-8 w-8 p-0"
-							>
-								<span className="sr-only">Abrir</span>
-								<MoreHorizontal className="h-4 w-4" />
-							</Button>
-						</DropdownMenuTrigger>
-						<DropdownMenuContent align="end">
-							<DropdownMenuLabel>{cliente.nome.toUpperCase()}</DropdownMenuLabel>
-							<DropdownMenuSeparator />
-							<DropdownMenuItem
-								onClick={() => navigate(`/clientes/visualizar/${cliente.id}`)}
-								className="cursor-pointer"
-							>
-								<Eye className="h-4 w-4 " />
-								Visualizar
-							</DropdownMenuItem>
-							<DropdownMenuItem
-								onClick={() => navigate(`/clientes/editar/${cliente.id}`)}
-								className="cursor-pointer"
-							>
-								<Edit className="h-4 w-4 " />
-								Editar
-							</DropdownMenuItem>
-							<DropdownMenuItem
-								onClick={() => openDeleteModal(cliente)}
-								className="cursor-pointer text-destructive focus:text-destructive"
-							>
-								<Trash2 className="h-4 w-4 " />
-								Excluir
-							</DropdownMenuItem>
-						</DropdownMenuContent>
-					</DropdownMenu>
-				);
-			},
-		},
-	];
-
-	const table = useReactTable({
-		data: filteredData,
-		columns,
-		getCoreRowModel: getCoreRowModel(),
-		getPaginationRowModel: getPaginationRowModel(),
-		getFilteredRowModel: getFilteredRowModel(),
-		state: {
-			globalFilter,
-		},
-		onGlobalFilterChange: setGlobalFilter,
-		globalFilterFn: (row, columnId, filterValue) => {
-			const value = row.getValue(columnId);
-			if (typeof value === "string") {
-				return value.toLowerCase().includes(filterValue.toLowerCase());
-			}
-			return false;
-		},
+		return matchesSearch && matchesRamo;
 	});
 
-	const handleFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setGlobalFilter(e.target.value);
-	};
-
-	// Função temporária para manipular a seleção de ramos no modal
-	const handleTempRamoToggle = (ramoId: string) => {
-		setTempRamosFilter((prev) => {
-			if (prev.includes(ramoId)) {
-				return prev.filter((id) => id !== ramoId);
-			} else {
-				return [...prev, ramoId];
-			}
-		});
-	};
-
-	// Função para aplicar os filtros temporários quando o usuário clica em "Aplicar"
-	const applyFilters = () => {
-		setRamosFilter(tempRamosFilter);
-		setShowFilterModal(false);
-	};
-
-	// Remove um ramo específico do filtro
-	const removeRamoFilter = (ramoId: string) => {
-		setRamosFilter((prev) => prev.filter((id) => id !== ramoId));
-	};
-
-	const clearFilters = () => {
-		setRamosFilter([]);
-		setShowFilterModal(false);
-	};
-
-	// Limpa apenas os filtros temporários (quando o usuário cancela no modal)
-	const clearTempFilters = () => {
-		setTempRamosFilter([]);
-	};
-
-	// Obtém as descrições dos ramos selecionados
-	const selectedRamosDescriptions = useMemo(() => {
-		return ramosFilter.map((ramoId) => {
-			const ramo = ramos.find((r) => r.id.toString() === ramoId);
-			return {
-				id: ramoId,
-				descricao: ramo?.descricao || ramoId,
-			};
-		});
-	}, [ramosFilter, ramos]);
-
 	return (
-		<>
-			<div className="mb-6 flex gap-2">
-				<div className="flex gap-2">
-					<Button
-						onClick={() => navigate("/clientes/novo")}
-						className="gap-2"
-					>
-						<Plus className="w-4 h-4" />
-						<div className="hidden lg:block">Adicionar Cliente</div>
-					</Button>
-					<Button
-						variant="outline"
-						className="gap-2"
-						onClick={() => setShowFilterModal(true)}
-					>
-						<Filter className="w-4 h-4" />
-						<div className="hidden lg:block">Filtrar</div>
-						{ramosFilter.length > 0 && (
-							<Badge
-								variant="secondary"
-								className="ml-1"
-							>
-								{ramosFilter.length}
-							</Badge>
-						)}
-					</Button>
-				</div>
-				<div>
-					<div className="flex w-full max-w-sm items-center space-x-2 relative">
-						<Input
-							type="text"
-							placeholder="Buscar por nome..."
-							value={globalFilter}
-							onChange={handleFilter}
-							className="pl-8"
-						/>
-						<SearchIcon className="w-4 h-4 absolute left-1 text-muted-foreground" />
-						{globalFilter && (
-							<Button
-								variant="ghost"
-								className="h-8 w-8 p-0 absolute right-2"
-								onClick={() => setGlobalFilter("")}
-							>
-								<XCircle className="h-4 w-4" />
-							</Button>
-						)}
-					</div>
-				</div>
+		<div className="container py-6">
+			<div className="mb-8 flex items-center justify-between">
+				<h1 className="text-2xl font-bold">Clientes</h1>
+				<Button
+					className="flex items-center"
+					onClick={() => navigate("/clientes/novo")}
+				>
+					<PlusCircle className="mr-2 h-4 w-4" />
+					Novo Cliente
+				</Button>
 			</div>
 
-			{/* Modal de Filtros */}
-			<Dialog
-				open={showFilterModal}
-				onOpenChange={setShowFilterModal}
-			>
-				<DialogContent className="sm:max-w-[500px]">
-					<DialogHeader>
-						<DialogTitle>Filtrar Clientes</DialogTitle>
-						<DialogDescription>Selecione os ramos de atividade para filtrar os clientes.</DialogDescription>
-					</DialogHeader>
+			<Card>
+				<CardHeader>
+					<CardTitle>Gerenciamento de Clientes</CardTitle>
+					<CardDescription>Visualize, edite e gerencie os clientes cadastrados no sistema.</CardDescription>
+				</CardHeader>
+				<CardContent>
+					<div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+						<div className="flex w-full max-w-sm items-center space-x-2 relative">
+							<Input
+								type="text"
+								placeholder="Buscar por nome, ramo ou telefone..."
+								value={searchTerm}
+								onChange={(e) => setSearchTerm(e.target.value)}
+								className="pl-8"
+							/>
+							<Search className="h-4 w-4 absolute left-2 text-muted-foreground" />
+							{searchTerm && (
+								<Button
+									variant="ghost"
+									className="h-8 w-8 p-0 absolute right-2"
+									onClick={() => setSearchTerm("")}
+								>
+									<XCircle className="h-4 w-4" />
+								</Button>
+							)}
+						</div>
 
-					<div className="py-4">
-						<div className="space-y-4">
-							<div>
-								<label className="text-sm font-medium mb-2 block">
-									Ramo(s) de Atividade
-									{tempRamosFilter.length > 0 && <span className="text-xs text-muted-foreground ml-2">{tempRamosFilter.length} selecionado(s)</span>}
-								</label>
-								<div className="border rounded-md">
-									<ScrollArea className="h-[250px] p-2">
-										<div className="space-y-2">
-											{ramos.map((ramo) => (
-												<div
-													key={ramo.id}
-													className="flex items-center space-x-2"
-												>
-													<Checkbox
-														id={`ramo-modal-${ramo.id}`}
-														checked={tempRamosFilter.includes(ramo.id.toString())}
-														onCheckedChange={() => handleTempRamoToggle(ramo.id.toString())}
-													/>
-													<label
-														htmlFor={`ramo-modal-${ramo.id}`}
-														className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-													>
-														{ramo.descricao.toUpperCase()}
-													</label>
-												</div>
-											))}
-										</div>
-									</ScrollArea>
-								</div>
-							</div>
+						<div className="flex flex-wrap gap-2">
+							{ramos.length > 0 && (
+								<select
+									className="flex h-10 w-[180px] items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+									value={ramoFilter}
+									onChange={(e) => setRamoFilter(e.target.value)}
+								>
+									<option value="todos">Todos os ramos</option>
+									{ramos.map((ramo) => (
+										<option
+											key={ramo.id}
+											value={ramo.id.toString()}
+										>
+											{ramo.descricao}
+										</option>
+									))}
+								</select>
+							)}
 						</div>
 					</div>
 
-					<DialogFooter className="flex gap-2">
+					{isLoading ? (
+						// Esqueleto de carregamento
+						<div className="space-y-2">
+							{Array.from({ length: 5 }).map((_, index) => (
+								<div
+									key={index}
+									className="flex items-center space-x-4 py-3"
+								>
+									<Skeleton className="h-12 w-12 rounded-full" />
+									<div className="space-y-2">
+										<Skeleton className="h-4 w-[250px]" />
+										<Skeleton className="h-4 w-[200px]" />
+									</div>
+								</div>
+							))}
+						</div>
+					) : clientesFiltrados.length === 0 ? (
+						// Mensagem quando não há clientes
+						<div className="flex flex-col items-center justify-center py-10 text-center">
+							<AlertCircle className="mb-2 h-10 w-10 text-muted-foreground" />
+							<h3 className="mb-1 text-lg font-medium">Nenhum cliente encontrado</h3>
+							<p className="text-sm text-muted-foreground">
+								{searchTerm || ramoFilter !== "todos" ? "Tente ajustar seus filtros para encontrar o que procura." : "Não há clientes cadastrados no sistema."}
+							</p>
+						</div>
+					) : (
+						// Tabela de clientes
+						<div className="rounded-md border">
+							<Table>
+								<TableHeader>
+									<TableRow>
+										<TableHead>Cliente</TableHead>
+										<TableHead>Telefone</TableHead>
+										<TableHead>Ramo</TableHead>
+										<TableHead className="text-right">Ações</TableHead>
+									</TableRow>
+								</TableHeader>
+								<TableBody>
+									{clientesFiltrados.map((cliente) => (
+										<TableRow key={cliente.id}>
+											<TableCell>
+												<div className="flex items-center gap-3">
+													<div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary">
+														<Eye className="h-5 w-5" />
+													</div>
+													<div>
+														<div className="font-medium">{cliente.nome.toUpperCase()}</div>
+														<div className="text-sm text-muted-foreground">ID: {cliente.id}</div>
+													</div>
+												</div>
+											</TableCell>
+											<TableCell>{formatarTelefone(cliente.telefone)}</TableCell>
+											<TableCell>
+												{cliente.ramo ? <Badge variant="outline">{cliente.ramo.descricao}</Badge> : <span className="text-muted-foreground">-</span>}
+											</TableCell>
+											<TableCell className="text-right">
+												<DropdownMenu>
+													<DropdownMenuTrigger asChild>
+														<Button
+															variant="ghost"
+															className="h-8 w-8 p-0"
+														>
+															<span className="sr-only">Abrir menu</span>
+															<ChevronDown className="h-4 w-4" />
+														</Button>
+													</DropdownMenuTrigger>
+													<DropdownMenuContent align="end">
+														<DropdownMenuLabel>{cliente.nome.toUpperCase()}</DropdownMenuLabel>
+														<DropdownMenuSeparator />
+														<DropdownMenuItem onClick={() => navigate(`/clientes/visualizar/${cliente.id}`)}>
+															<Eye className="mr-2 h-4 w-4" />
+															Visualizar
+														</DropdownMenuItem>
+														<DropdownMenuItem onClick={() => navigate(`/clientes/editar/${cliente.id}`)}>
+															<Edit className="mr-2 h-4 w-4" />
+															Editar
+														</DropdownMenuItem>
+														<Separator className="my-1" />
+														<DropdownMenuItem
+															className="text-destructive focus:text-destructive"
+															onClick={() => setDeleteDialog({ open: true, cliente })}
+														>
+															<Trash2 className="mr-2 h-4 w-4" />
+															Excluir
+														</DropdownMenuItem>
+													</DropdownMenuContent>
+												</DropdownMenu>
+											</TableCell>
+										</TableRow>
+									))}
+								</TableBody>
+							</Table>
+						</div>
+					)}
+				</CardContent>
+			</Card>
+
+			{/* Diálogo de confirmação de exclusão */}
+			<Dialog
+				open={deleteDialog.open}
+				onOpenChange={(open) => !open && setDeleteDialog({ ...deleteDialog, open })}
+			>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Excluir cliente</DialogTitle>
+						<DialogDescription>
+							Esta ação não pode ser desfeita. Isso excluirá permanentemente o cliente{" "}
+							<span className="font-semibold">{deleteDialog.cliente?.nome?.toUpperCase()}</span> e suas informações do sistema.
+						</DialogDescription>
+					</DialogHeader>
+					<DialogFooter>
 						<Button
 							variant="outline"
-							onClick={() => {
-								setShowFilterModal(false);
-							}}
+							onClick={() => setDeleteDialog({ open: false, cliente: null })}
 						>
 							Cancelar
 						</Button>
 						<Button
-							variant="secondary"
-							onClick={clearTempFilters}
-							disabled={tempRamosFilter.length === 0}
+							variant="destructive"
+							onClick={() => deleteDialog.cliente && excluirCliente(deleteDialog.cliente.id)}
 						>
-							Limpar
+							Excluir
 						</Button>
-						<Button onClick={applyFilters}>Aplicar</Button>
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>
-
-			<div>
-				<div className="rounded">
-					{ramosFilter.length > 0 && (
-						<div className="mb-4 flex flex-wrap items-center gap-2">
-							<span className="text-xs text-muted-foreground">Filtrando por ramos:</span>
-							{selectedRamosDescriptions.map((ramo) => (
-								<Badge
-									key={ramo.id}
-									variant="outline"
-									className="flex items-center gap-1"
-								>
-									{ramo.descricao}
-									<Button
-										variant="ghost"
-										size="icon"
-										className="h-4 w-4 p-0 ml-1"
-										onClick={() => removeRamoFilter(ramo.id)}
-									>
-										<XCircle className="h-3 w-3" />
-									</Button>
-								</Badge>
-							))}
-							{ramosFilter.length > 1 && (
-								<Button
-									variant="ghost"
-									size="sm"
-									className="h-6 px-2 text-xs"
-									onClick={clearFilters}
-								>
-									Limpar todos
-								</Button>
-							)}
-						</div>
-					)}
-
-					<Table>
-						<TableHeader>
-							{table.getHeaderGroups().map((headerGroup) => (
-								<TableRow key={headerGroup.id}>
-									{headerGroup.headers.map((header) => (
-										<TableHead key={header.id}>{header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}</TableHead>
-									))}
-								</TableRow>
-							))}
-						</TableHeader>
-						<TableBody>
-							{table.getRowModel().rows?.length ? (
-								table.getRowModel().rows.map((row) => (
-									<TableRow
-										key={row.id}
-										data-state={row.getIsSelected() && "selected"}
-									>
-										{row.getVisibleCells().map((cell) => (
-											<TableCell
-												className={`py-3 text-xs lg:text-sm lg:py-4 ${cell.column.columnDef.id === "actions" ? "min-w-[40px]" : ""} ${
-													cell.column.columnDef.id === "nome" ? "font-semibold text-foreground/80" : ""
-												}`}
-												key={cell.id}
-											>
-												{flexRender(cell.column.columnDef.cell, cell.getContext())}
-											</TableCell>
-										))}
-									</TableRow>
-								))
-							) : (
-								<TableRow>
-									<TableCell
-										colSpan={columns.length}
-										className="h-24 text-center"
-									>
-										<div className="flex gap-2 justify-center items-center font-semibold text-muted-foreground text-xs">
-											<XCircle className="w-3 h-3" />
-											{globalFilter
-												? `Nenhum cliente encontrado com "${globalFilter}"`
-												: ramosFilter.length > 0
-												? "Nenhum cliente encontrado com os filtros aplicados"
-												: "Não foi encontrado nenhum dado"}
-										</div>
-									</TableCell>
-								</TableRow>
-							)}
-						</TableBody>
-					</Table>
-					<div className="flex items-center justify-end space-x-2 pt-4">
-						<Button
-							variant="outline"
-							size="sm"
-							onClick={() => table.previousPage()}
-							disabled={!table.getCanPreviousPage()}
-						>
-							<ChevronLeft className="w-4 h-4" />
-						</Button>
-						<Button
-							variant="outline"
-							size="sm"
-							onClick={() => table.nextPage()}
-							disabled={!table.getCanNextPage()}
-						>
-							<ChevronRight className="w-4 h-4" />
-						</Button>
-					</div>
-				</div>
-			</div>
-
-			{/* Modal de Confirmação de Exclusão */}
-			<AlertDialog
-				open={isDeleteModalOpen}
-				onOpenChange={setIsDeleteModalOpen}
-			>
-				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>Confirmar exclusão</AlertDialogTitle>
-						<AlertDialogDescription>
-							Tem certeza que deseja excluir o cliente <span className="font-semibold">{clienteToDelete?.nome?.toUpperCase()}</span>?
-							<br />
-							Esta ação não pode ser desfeita.
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel disabled={isDeleting}>Cancelar</AlertDialogCancel>
-						<AlertDialogAction
-							onClick={(e) => {
-								e.preventDefault();
-								handleDeleteCliente();
-							}}
-							disabled={isDeleting}
-							className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-						>
-							{isDeleting ? "Excluindo..." : "Excluir"}
-						</AlertDialogAction>
-					</AlertDialogFooter>
-				</AlertDialogContent>
-			</AlertDialog>
-		</>
+		</div>
 	);
 };
 

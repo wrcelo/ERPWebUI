@@ -38,7 +38,69 @@ export type Produto = {
 };
 
 export type User = {
+	email: string;
+};
+
+export type Fornecedor = {
 	id: number;
+	tipo: string; // "J" para jurídica ou "F" para física
+	nome: string;
+	cpF_CNPJ: string; // Nota: o nome da propriedade vem com esta capitalização da API
+	inscricaoEstadual: string;
+	nomeContato: string;
+	idEndereco: number;
+	endereco?: {
+		estado: string | null;
+		cidade: string | null;
+		bairro: string | null;
+		logradouro: string;
+		numero: string;
+		complemento: string;
+		cep: string;
+	};
+	telefone: string;
+	email: string;
+	site: string;
+	idRamo: number;
+	ramo?: {
+		id: number;
+		descricao: string;
+	};
+	nomeRepresentante: string;
+	idEnderecoRepresentante: number;
+	enderecoRepresentante?: {
+		estado: string | null;
+		cidade: string | null;
+		bairro: string | null;
+		logradouro: string;
+		numero: string;
+		complemento: string;
+		cep: string;
+	};
+	telefoneRepresentante: string;
+	celularRepresentante: string;
+	emailRepresentante: string;
+	redeSocial: string | null;
+	contas?: ContaFornecedor[];
+};
+
+export type ContaFornecedor = {
+	id: number;
+	idFornecedor: number;
+	fornecedor: null;
+	idBanco: number;
+	banco?: {
+		id: number;
+		nomeBanco: string;
+		codigoBanco: string;
+		siteBanco: string;
+	};
+	agencia: string;
+	agenciaDigito: string;
+	conta: string;
+	contaDigito: string;
+	principalConta: string; // "0" ou "1"
+	pix: string | null;
 };
 
 export type Cor = {

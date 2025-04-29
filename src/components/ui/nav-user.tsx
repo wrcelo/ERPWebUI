@@ -22,11 +22,13 @@ export function NavUser({
 		name: string;
 		email: string;
 		avatar: string;
+		initials?: string;
 	};
 }) {
 	const { isMobile } = useSidebar();
 	const navigate = useNavigate();
 	const { toggleSidebar } = useSidebar();
+
 	return (
 		<SidebarMenu>
 			<SidebarMenuItem>
@@ -41,7 +43,7 @@ export function NavUser({
 									src={user.avatar}
 									alt={user.name}
 								/>
-								<AvatarFallback className="rounded-lg">WR</AvatarFallback>
+								<AvatarFallback className="rounded-lg">{user.initials || user.name.substring(0, 2).toUpperCase()}</AvatarFallback>
 							</Avatar>
 							<div className="grid flex-1 text-left text-sm leading-tight">
 								<span className="truncate font-semibold">{user.name}</span>
@@ -63,7 +65,7 @@ export function NavUser({
 										src={user.avatar}
 										alt={user.name}
 									/>
-									<AvatarFallback className="rounded-lg">CN</AvatarFallback>
+									<AvatarFallback className="rounded-lg">{user.initials || user.name.substring(0, 2).toUpperCase()}</AvatarFallback>
 								</Avatar>
 								<div className="grid flex-1 text-left text-sm leading-tight">
 									<span className="truncate font-semibold">{user.name}</span>
@@ -79,7 +81,7 @@ export function NavUser({
 									navigate("/ajustes");
 								}}
 							>
-								<Settings />
+								<Settings className="mr-2 h-4 w-4" />
 								Configurações da conta
 							</DropdownMenuItem>
 						</DropdownMenuGroup>
@@ -90,7 +92,7 @@ export function NavUser({
 								logout();
 							}}
 						>
-							<LogOut />
+							<LogOut className="mr-2 h-4 w-4" />
 							Sair
 						</DropdownMenuItem>
 					</DropdownMenuContent>
